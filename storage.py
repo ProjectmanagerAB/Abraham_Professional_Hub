@@ -1,6 +1,8 @@
 import json
 import uuid
 from pathlib import Path
+from urllib.parse import urlparse
+
 import requests
 import streamlit as st
 
@@ -17,12 +19,23 @@ def _secret(name, default=None):
         return default
 
 
+def _valid_supabase_url(value: str) -> bool:
+    if not value:
+        return False
+    try:
+        parsed = urlparse(value)
+        return parsed.scheme in ("http", "https") and bool(parsed.netloc)
+    except Exception:
+        return False
+
+
 class PortfolioStore:
     def __init__(self):
-        self.url = (_secret("SUPABASE_URL") or "").rstrip("/")
-        self.key = _secret("SUPABASE_SERVICE_KEY") or ""
-        self.bucket = _secret("SUPABASE_BUCKET", "portfolio-media")
-        self.remote = bool(self.url and self.key)
+        self.url = (_secret("SUPABASE_URL") or "").strip().rstrip("/")
+        self.key = (_secret("SUPABASE_SERVICE_KEY") or "").strip()
+        self.bucket = (_secret("SUPABASE_BUCKET", "portfolio-media") or "portfolio-media").strip()
+        self.remote = bool(_valid_supabase_url(self.url) and self.key)
+        self.last_error = None
 
     @property
     def mode(self):
@@ -38,37 +51,55 @@ class PortfolioStore:
             h.update(extra)
         return h
 
-    def load(self, lang="es"):
-        row_key = f"profile_{lang}"
-        if self.remote:
-            endpoint = f"{self.url}/rest/v1/portfolio_state"
-            r = requests.get(
-                endpoint,
-                params={"key": f"eq.{row_key}", "select": "content"},
-                headers=self._headers(), timeout=20,
-            )
-            r.raise_for_status()
-            rows = r.json()
-            if rows:
-                return rows[0]["content"]
+    def _local_load(self, lang="es"):
         file = ES_FILE if lang == "es" else EN_FILE
         if file.exists():
             return json.loads(file.read_text(encoding="utf-8"))
-        return self.load("es") if lang != "es" else {}
+        if lang != "es":
+            return self._local_load("es")
+        return {}
+
+    def load(self, lang="es"):
+        row_key = f"profile_{lang}"
+        if self.remote:
+            try:
+                endpoint = f"{self.url}/rest/v1/portfolio_state"
+                r = requests.get(
+                    endpoint,
+                    params={"key": f"eq.{row_key}", "select": "content"},
+                    headers=self._headers(),
+                    timeout=20,
+                )
+                r.raise_for_status()
+                rows = r.json()
+                if rows:
+                    self.last_error = None
+                    return rows[0]["content"]
+            except requests.RequestException as exc:
+                self.last_error = f"Supabase read failed: {exc}"
+                # Public portfolio must remain available even if Supabase is unavailable.
+        return self._local_load(lang)
 
     def save(self, data, lang="es"):
         row_key = f"profile_{lang}"
         if self.remote:
-            endpoint = f"{self.url}/rest/v1/portfolio_state"
-            payload = {"key": row_key, "content": data}
-            r = requests.post(
-                endpoint,
-                params={"on_conflict": "key"},
-                headers=self._headers({"Prefer": "resolution=merge-duplicates,return=minimal"}),
-                json=payload, timeout=20,
-            )
-            r.raise_for_status()
-            return True
+            try:
+                endpoint = f"{self.url}/rest/v1/portfolio_state"
+                payload = {"key": row_key, "content": data}
+                r = requests.post(
+                    endpoint,
+                    params={"on_conflict": "key"},
+                    headers=self._headers({"Prefer": "resolution=merge-duplicates,return=minimal"}),
+                    json=payload,
+                    timeout=20,
+                )
+                r.raise_for_status()
+                self.last_error = None
+                return True
+            except requests.RequestException as exc:
+                self.last_error = f"Supabase write failed: {exc}"
+                return False
+
         file = ES_FILE if lang == "es" else EN_FILE
         file.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
         return True
@@ -78,26 +109,125 @@ class PortfolioStore:
         object_name = f"{prefix}/{uuid.uuid4().hex}_{safe_name}"
         content = uploaded_file.getvalue()
         mime = uploaded_file.type or "application/octet-stream"
+
         if self.remote:
-            endpoint = f"{self.url}/storage/v1/object/{self.bucket}/{object_name}"
-            headers = {
-                "apikey": self.key,
-                "Authorization": f"Bearer {self.key}",
-                "Content-Type": mime,
-                "x-upsert": "false",
-            }
-            r = requests.post(endpoint, headers=headers, data=content, timeout=90)
-            r.raise_for_status()
-            return f"{self.url}/storage/v1/object/public/{self.bucket}/{object_name}"
+            try:
+                endpoint = f"{self.url}/storage/v1/object/{self.bucket}/{object_name}"
+                headers = {
+                    "apikey": self.key,
+                    "Authorization": f"Bearer {self.key}",
+                    "Content-Type": mime,
+                    "x-upsert": "false",
+                }
+                r = requests.post(endpoint, headers=headers, data=content, timeout=90)
+                r.raise_for_status()
+                self.last_error = None
+                return f"{self.url}/storage/v1/object/public/{self.bucket}/{object_name}"
+            except requests.RequestException as exc:
+                self.last_error = f"Supabase upload failed: {exc}"
+                return None
+
         UPLOADS.mkdir(parents=True, exist_ok=True)
         path = UPLOADS / Path(object_name).name
         path.write_bytes(content)
         return str(path.relative_to(BASE)).replace("\\", "/")
 
+
+    def save_recruiter_feedback(self, payload):
+        """Store a recruiter's explicit decision. Returns True on success."""
+        if not self.remote:
+            self.last_error = "Recruiter feedback requires Supabase."
+            return False
+        try:
+            endpoint = f"{self.url}/rest/v1/recruiter_feedback"
+            r = requests.post(
+                endpoint,
+                headers=self._headers({"Prefer": "return=minimal"}),
+                json=payload,
+                timeout=20,
+            )
+            r.raise_for_status()
+            self.last_error = None
+            return True
+        except requests.RequestException as exc:
+            self.last_error = f"Recruiter feedback write failed: {exc}"
+            return False
+
+    def list_recruiter_feedback(self, limit=100):
+        """Return latest recruiter decisions for the private admin inbox."""
+        if not self.remote:
+            return []
+        try:
+            endpoint = f"{self.url}/rest/v1/recruiter_feedback"
+            r = requests.get(
+                endpoint,
+                params={
+                    "select": "id,decision,recruiter_name,company,email,role_title,message,language,created_at",
+                    "order": "created_at.desc",
+                    "limit": str(limit),
+                },
+                headers=self._headers(),
+                timeout=20,
+            )
+            r.raise_for_status()
+            self.last_error = None
+            return r.json()
+        except requests.RequestException as exc:
+            self.last_error = f"Recruiter feedback read failed: {exc}"
+            return []
+
+    def notify_recruiter_feedback(self, payload):
+        """Optional automatic notification via Resend and/or a generic webhook.
+        Notification failures never invalidate a successfully saved decision.
+        """
+        notified = False
+        errors = []
+
+        resend_key = (_secret("RESEND_API_KEY") or "").strip()
+        notify_email = (_secret("NOTIFY_EMAIL") or "").strip()
+        from_email = (_secret("NOTIFY_FROM_EMAIL", "onboarding@resend.dev") or "onboarding@resend.dev").strip()
+        if resend_key and notify_email:
+            try:
+                decision_label = "CONTINUAR PROCESO" if payload.get("decision") == "continue" else "CERRAR / DECLINAR"
+                subject = f"Professional Hub: {decision_label} · {payload.get('company') or 'Reclutador'}"
+                body = (
+                    f"Decisión: {decision_label}\n"
+                    f"Reclutador: {payload.get('recruiter_name','')}\n"
+                    f"Empresa: {payload.get('company','')}\n"
+                    f"Vacante: {payload.get('role_title','')}\n"
+                    f"Correo: {payload.get('email','')}\n\n"
+                    f"Comentario:\n{payload.get('message','')}"
+                )
+                r = requests.post(
+                    "https://api.resend.com/emails",
+                    headers={"Authorization": f"Bearer {resend_key}", "Content-Type": "application/json"},
+                    json={"from": from_email, "to": [notify_email], "subject": subject, "text": body},
+                    timeout=20,
+                )
+                r.raise_for_status()
+                notified = True
+            except requests.RequestException as exc:
+                errors.append(f"Resend: {exc}")
+
+        webhook = (_secret("NOTIFY_WEBHOOK_URL") or "").strip()
+        if webhook:
+            try:
+                r = requests.post(webhook, json=payload, timeout=20)
+                r.raise_for_status()
+                notified = True
+            except requests.RequestException as exc:
+                errors.append(f"Webhook: {exc}")
+
+        if errors:
+            self.last_error = "; ".join(errors)
+        return notified
+
     def bootstrap_remote(self):
         if not self.remote:
             return False
+        ok = True
         for lang in ("es", "en"):
-            current = self.load(lang)
-            self.save(current, lang)
-        return True
+            current = self._local_load(lang)
+            if not self.save(current, lang):
+                ok = False
+        return ok

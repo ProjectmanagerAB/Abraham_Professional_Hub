@@ -32,6 +32,12 @@ st.markdown("""
 .card,.case,.stat{border:1px solid rgba(128,128,128,.22);border-radius:20px;padding:1.05rem 1.15rem;margin-bottom:.85rem}.case{height:100%}.card-title{font-size:1.08rem;font-weight:750;margin-bottom:.18rem}.stat{min-height:105px}.stat .v{font-size:1.13rem;font-weight:750;margin-top:.35rem}
 .timeline{border-left:2px solid rgba(128,128,128,.22);padding-left:1.1rem;margin-left:.35rem}.timeline-item{margin:0 0 1.35rem;position:relative}.timeline-item:before{content:"";width:10px;height:10px;border-radius:50%;background:currentColor;position:absolute;left:-1.48rem;top:.42rem;opacity:.55}
 .adminbar{padding:.75rem 1rem;border:1px solid rgba(128,128,128,.25);border-radius:16px;margin-bottom:1rem;background:rgba(128,128,128,.06)}
+/* Cleaner public presentation */
+#MainMenu{visibility:hidden;}
+footer{visibility:hidden;}
+[data-testid="stToolbar"]{visibility:hidden;height:0;}
+[data-testid="stDecoration"]{display:none;}
+header[data-testid="stHeader"]{background:transparent;}
 </style>
 """, unsafe_allow_html=True)
 
@@ -128,9 +134,15 @@ def check_password(password):
 
 
 def save_admin(data, lang="es"):
-    store.save(data, lang)
-    if lang == "es": st.session_state.admin_data = copy.deepcopy(data)
-    st.success("Cambios guardados correctamente.")
+    ok = store.save(data, lang)
+    if ok:
+        if lang == "es":
+            st.session_state.admin_data = copy.deepcopy(data)
+        st.success("Cambios guardados correctamente en Supabase." if store.remote else "Cambios guardados correctamente en el almacenamiento local.")
+        return True
+    detail = getattr(store, "last_error", None) or "No se recibió confirmación del almacenamiento."
+    st.error("No se pudieron guardar los cambios. " + detail)
+    return False
 
 
 # ---------------- PUBLIC / ADMIN ROUTING ----------------
@@ -166,7 +178,7 @@ if is_admin_route():
         st.session_state.admin_authenticated = False; refresh()
     c4.link_button("Abrir vista pública", "?", use_container_width=True)
 
-    section = st.sidebar.radio("Administración", ["Panel", "Perfil", "Enfoques", "Experiencia", "Proyectos", "Competencias", "Formación", "Certificaciones", "Evidencias", "Traducción EN", "Avanzado"])
+    section = st.sidebar.radio("Administración", ["Panel", "Perfil", "Enfoques", "Experiencia", "Proyectos", "Competencias", "Formación", "Certificaciones", "Evidencias", "Decisiones RH", "Traducción EN", "Avanzado"])
 
     if section == "Panel":
         st.header("Panel de administración")
@@ -348,6 +360,28 @@ if is_admin_route():
                 if a.button("Guardar",key=f"evs{i}",use_container_width=True): save_admin(data); refresh()
                 if b.button("Eliminar",key=f"evx{i}",use_container_width=True): items.pop(i); save_admin(data); refresh()
 
+    elif section == "Decisiones RH":
+        st.header("Decisiones de reclutadores")
+        st.caption("Bandeja privada. Aquí se registran únicamente respuestas enviadas desde la vista pública.")
+        rows = store.list_recruiter_feedback(200)
+        if not rows:
+            st.info("Todavía no hay decisiones registradas.")
+        else:
+            for row in rows:
+                positive = row.get("decision") == "continue"
+                icon = "✅" if positive else "⛔"
+                label = "CONTINUAR PROCESO" if positive else "CERRAR / DECLINAR"
+                title = f"{icon} {label} · {row.get('company') or 'Empresa no indicada'}"
+                with st.expander(title):
+                    a,b = st.columns(2)
+                    a.write(f"**Reclutador:** {row.get('recruiter_name') or 'No indicado'}")
+                    a.write(f"**Correo:** {row.get('email') or 'No indicado'}")
+                    b.write(f"**Vacante:** {row.get('role_title') or 'No indicada'}")
+                    b.write(f"**Fecha:** {row.get('created_at') or ''}")
+                    if row.get("message"):
+                        st.write("**Comentario:**")
+                        st.write(row.get("message"))
+
     elif section == "Traducción EN":
         st.header("Versión en inglés")
         st.write("La vista pública en inglés usa una copia independiente. Cuando modifiques el español, genera de nuevo la traducción y después puedes revisarla desde la vista pública.")
@@ -385,7 +419,7 @@ with st.sidebar:
     track = st.selectbox(ui(lang,"focus"), tracks, index=0)
     st.caption(data.get("profile_tracks", {}).get(track, {}).get("tagline", ""))
     st.divider()
-    nav = [("Inicio","home"),("Trayectoria","career"),("Casos de proyecto","projects"),("Competencias","skills"),("Formación","education"),("Evidencias","evidence"),("Match de vacante","jobmatch"),("CV ATS","resume")]
+    nav = [("Inicio","home"),("Trayectoria","career"),("Casos de proyecto","projects"),("Competencias","skills"),("Formación","education"),("Evidencias","evidence")]
     display=[ui(lang,key) for _,key in nav]
     chosen = st.radio("Navegación", display, label_visibility="collapsed")
     section = nav[display.index(chosen)][0]
@@ -458,16 +492,83 @@ elif section == "Evidencias":
                 st.markdown(f"<div class='card'><div class='kicker'>{ev.get('type','')}</div><div class='card-title'>{ev.get('title','')}</div><div class='small'>{ev.get('description','')}</div><div class='muted tiny'>{ev.get('related','')}</div></div>",unsafe_allow_html=True)
                 media_render(ev)
 
-elif section == "Match de vacante":
-    st.header(ui(lang,"jobmatch")); st.caption(ui(lang,"match_note")); job=st.text_area(ui(lang,"paste_job"),height=280)
-    if st.button(ui(lang,"analyze"),use_container_width=True) and job.strip():
-        jt=tokenize(job); scored=[]
-        for tr in tracks:
-            tt=tokenize(track_text(data,tr)); overlap=jt & tt; score=(len(overlap)/max(1,len(jt)))*100; scored.append((score,tr,sorted(overlap)))
-        for score,tr,overlap in sorted(scored,reverse=True):
-            st.subheader(f"{tr} · {score:.0f}%"); st.write(", ".join(overlap[:30]) if overlap else "—")
 
-elif section == "CV ATS":
-    st.header(ui(lang,"resume")); ats=build_ats(data,track,lang); st.code(ats,language=None); st.download_button(ui(lang,"download"),ats.encode("utf-8"),f"Abraham_Yanez_{track.replace(' ','_').replace('/','-')}_{lang}.txt",use_container_width=True)
+# ---------------- RECRUITER DECISION CTA ----------------
+st.divider()
+st.markdown("### " + ("¿Deseas continuar con mi candidatura?" if lang == "es" else "Would you like to continue with my application?"))
+st.caption(
+    "Esta respuesta es privada y me permite dar seguimiento correcto al proceso de selección."
+    if lang == "es" else
+    "Your response is private and helps me follow up appropriately on the recruitment process."
+)
 
-st.divider(); st.caption(f"Abraham Yañez Professional Hub · {datetime.now().year}")
+if "recruiter_decision" not in st.session_state:
+    st.session_state.recruiter_decision = None
+
+cta_a, cta_b = st.columns(2)
+continue_label = "✅ Sí, continuar con el proceso" if lang == "es" else "✅ Yes, continue the process"
+decline_label = "⛔ Cerrar / declinar candidatura" if lang == "es" else "⛔ Close / decline application"
+if cta_a.button(continue_label, use_container_width=True, type="primary", key="recruiter_continue"):
+    st.session_state.recruiter_decision = "continue"
+    st.session_state.recruiter_feedback_sent = False
+if cta_b.button(decline_label, use_container_width=True, key="recruiter_decline"):
+    st.session_state.recruiter_decision = "decline"
+    st.session_state.recruiter_feedback_sent = False
+
+if st.session_state.recruiter_decision:
+    decision = st.session_state.recruiter_decision
+    positive = decision == "continue"
+    st.info(
+        ("Gracias. Completa estos datos para que pueda dar seguimiento al siguiente paso." if positive else
+         "Gracias por cerrar el ciclo. Tu respuesta evita seguimientos innecesarios y me ayuda a gestionar otras oportunidades.")
+        if lang == "es" else
+        ("Thank you. Please complete these details so I can follow up on the next step." if positive else
+         "Thank you for closing the loop. Your response prevents unnecessary follow-ups and helps me manage other opportunities.")
+    )
+    with st.form("recruiter_feedback_form", clear_on_submit=False):
+        recruiter_name = st.text_input("Nombre del reclutador" if lang == "es" else "Recruiter name")
+        company = st.text_input("Empresa" if lang == "es" else "Company")
+        role_title = st.text_input("Vacante / posición" if lang == "es" else "Role / position")
+        email = st.text_input("Correo de contacto (opcional)" if lang == "es" else "Contact email (optional)")
+        message = st.text_area("Comentario / siguiente paso (opcional)" if lang == "es" else "Comment / next step (optional)", height=110)
+        consent = st.checkbox(
+            "Confirmo que deseo enviar esta respuesta al candidato."
+            if lang == "es" else
+            "I confirm that I want to send this response to the candidate."
+        )
+        submitted = st.form_submit_button(
+            "Enviar decisión" if lang == "es" else "Send decision",
+            use_container_width=True,
+            type="primary",
+        )
+    if submitted:
+        if not consent:
+            st.error("Confirma el envío de la respuesta." if lang == "es" else "Please confirm that you want to send the response.")
+        elif not company.strip() and not recruiter_name.strip():
+            st.error("Indica al menos tu nombre o empresa." if lang == "es" else "Please provide at least your name or company.")
+        elif st.session_state.get("recruiter_feedback_sent"):
+            st.warning("Esta respuesta ya fue enviada en esta sesión." if lang == "es" else "This response has already been sent in this session.")
+        else:
+            payload = {
+                "decision": decision,
+                "recruiter_name": recruiter_name.strip(),
+                "company": company.strip(),
+                "email": email.strip(),
+                "role_title": role_title.strip(),
+                "message": message.strip(),
+                "language": lang,
+            }
+            ok = store.save_recruiter_feedback(payload)
+            if ok:
+                store.notify_recruiter_feedback(payload)
+                st.session_state.recruiter_feedback_sent = True
+                st.session_state.recruiter_decision = None
+                if positive:
+                    st.success("Respuesta registrada. Gracias por continuar con el proceso." if lang == "es" else "Response recorded. Thank you for continuing the process.")
+                else:
+                    st.success("Candidatura cerrada correctamente. Gracias por informar la decisión." if lang == "es" else "Application closed successfully. Thank you for sharing the decision.")
+            else:
+                st.error(("No fue posible registrar la respuesta. " if lang == "es" else "The response could not be recorded. ") + (store.last_error or ""))
+
+st.divider()
+st.caption(f"Abraham Yañez Professional Hub · {datetime.now().year}")
