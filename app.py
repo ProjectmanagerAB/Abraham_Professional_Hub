@@ -178,7 +178,7 @@ if is_admin_route():
         st.session_state.admin_authenticated = False; refresh()
     c4.link_button("Abrir vista pública", "?", use_container_width=True)
 
-    section = st.sidebar.radio("Administración", ["Panel", "Perfil", "Enfoques", "Experiencia", "Proyectos", "Competencias", "Formación", "Certificaciones", "Evidencias", "Decisiones RH", "Traducción EN", "Avanzado"])
+    section = st.sidebar.radio("Administración", ["Panel", "Publicación", "Perfil", "Perfiles internos CV/ATS", "Experiencia", "Proyectos", "Competencias", "Formación", "Certificaciones", "Evidencias", "Decisiones RH", "Traducción EN", "Avanzado"])
 
     if section == "Panel":
         st.header("Panel de administración")
@@ -191,6 +191,41 @@ if is_admin_route():
         if store.mode == "Local JSON":
             st.warning("La app funciona, pero en Streamlit Cloud los cambios locales pueden perderse al reiniciar. Configura Supabase para edición persistente.")
         st.info("Acceso administrador: agrega ?admin=1 al final de la URL pública. Ejemplo: https://tuapp.streamlit.app/?admin=1")
+
+    elif section == "Publicación":
+        st.header("Configuración de la vista pública")
+        st.caption("Estos controles definen qué verá un reclutador. Los perfiles internos CV/ATS no se muestran públicamente.")
+        pub = data.setdefault("public_settings", {})
+        default_areas = [
+            "Project Management & PMO",
+            "Operations & Production",
+            "Industrial Engineering & Continuous Improvement",
+            "Supply Chain & Digital Transformation",
+        ]
+        with st.form("publication_form"):
+            pub["public_title"] = st.text_input("Título principal público", pub.get("public_title", "Industrial Project & Operations Leader"))
+            pub["public_subtitle"] = st.text_area(
+                "Mensaje corto de posicionamiento",
+                pub.get("public_subtitle", "Project Management · Operations · Production · PMO · Industrial Engineering · Supply Chain"),
+                height=90,
+            )
+            pub["value_areas"] = split_lines(st.text_area(
+                "Áreas donde aporto valor (una por línea)",
+                "\n".join(pub.get("value_areas", default_areas)),
+                height=130,
+            ))
+            available_tracks = list(data.get("profile_tracks", {}).keys()) or ["Project Manager"]
+            current_track = pub.get("default_track", available_tracks[0])
+            default_idx = available_tracks.index(current_track) if current_track in available_tracks else 0
+            pub["default_track"] = st.selectbox("Perfil interno usado para el CV ATS descargable", available_tracks, index=default_idx)
+            pub["show_highlights"] = st.checkbox("Mostrar indicadores de portada", pub.get("show_highlights", True))
+            pub["show_evidence"] = st.checkbox("Mostrar sección Evidencias", pub.get("show_evidence", True))
+            pub["show_recruiter_decision"] = st.checkbox("Mostrar decisión del reclutador", pub.get("show_recruiter_decision", True))
+            pub["show_contact"] = st.checkbox("Mostrar botones LinkedIn / CV", pub.get("show_contact", True))
+            save = st.form_submit_button("Guardar configuración pública", use_container_width=True)
+        if save:
+            save_admin(data); refresh()
+        st.info("Recomendación: mantén una sola identidad pública. Usa los perfiles internos sólo para adaptar CVs y postulaciones.")
 
     elif section == "Perfil":
         st.header("Perfil general")
@@ -222,8 +257,9 @@ if is_admin_route():
                 data["highlights"] = edited_highlights
             save_admin(data); refresh()
 
-    elif section == "Enfoques":
-        st.header("Enfoques profesionales")
+    elif section == "Perfiles internos CV/ATS":
+        st.header("Perfiles internos para CV / ATS")
+        st.caption("No se muestran en la vista pública. Sirven para adaptar CVs y candidaturas a distintas vacantes.")
         pt = data.setdefault("profile_tracks", {})
         names = list(pt.keys())
         selected = st.selectbox("Editar enfoque", ["+ Nuevo enfoque"] + names)
@@ -248,14 +284,16 @@ if is_admin_route():
         selected = st.selectbox("Registro", ["+ Nueva experiencia"] + labels)
         new = selected == "+ Nueva experiencia"
         idx = None if new else labels.index(selected)
-        cur = {"role":"","company":"","location":"","period":"","tracks":[],"bullets":[]} if new else items[idx]
+        cur = {"role":"","company":"","location":"","period":"","tracks":[],"bullets":[],"published":True,"featured":False} if new else items[idx]
         with st.form("exp_form"):
             role = st.text_input("Puesto", cur.get("role", "")); company = st.text_input("Empresa / organización", cur.get("company", ""))
             location = st.text_input("Ubicación", cur.get("location", "")); period = st.text_input("Periodo", cur.get("period", ""))
-            selected_tracks = st.multiselect("Mostrar en estos perfiles", tracks, default=[x for x in cur.get("tracks", []) if x in tracks])
+            selected_tracks = st.multiselect("Perfiles internos CV/ATS", tracks, default=[x for x in cur.get("tracks", []) if x in tracks])
+            published = st.checkbox("Visible en el portafolio público", cur.get("published", True))
+            featured = st.checkbox("Destacar en la portada", cur.get("featured", False))
             bullets = st.text_area("Responsabilidades / logros (uno por línea)", "\n".join(cur.get("bullets", [])), height=220)
             save = st.form_submit_button("Guardar experiencia", use_container_width=True)
-        record = {"role":role,"company":company,"location":location,"period":period,"tracks":selected_tracks,"bullets":split_lines(bullets)}
+        record = {"role":role,"company":company,"location":location,"period":period,"tracks":selected_tracks,"bullets":split_lines(bullets),"published":published,"featured":featured}
         if save and role.strip():
             if new: items.insert(0, record)
             else: items[idx] = record
@@ -269,13 +307,15 @@ if is_admin_route():
         labels = [f"{i+1}. {x.get('title','')}" for i,x in enumerate(items)]
         selected = st.selectbox("Proyecto", ["+ Nuevo proyecto"] + labels)
         new = selected == "+ Nuevo proyecto"; idx = None if new else labels.index(selected)
-        cur = {"title":"","sector":"","region":"","role":"","status":"","tracks":[],"summary":"","evidence_note":""} if new else items[idx]
+        cur = {"title":"","sector":"","region":"","role":"","status":"","tracks":[],"summary":"","evidence_note":"","published":True,"featured":False} if new else items[idx]
         with st.form("project_form"):
             title = st.text_input("Título", cur.get("title", "")); sector = st.text_input("Sector", cur.get("sector", "")); region = st.text_input("Región", cur.get("region", ""))
-            role = st.text_input("Rol", cur.get("role", "")); status = st.text_input("Estado", cur.get("status", "")); selected_tracks = st.multiselect("Perfiles", tracks, default=[x for x in cur.get("tracks", []) if x in tracks])
+            role = st.text_input("Rol", cur.get("role", "")); status = st.text_input("Estado", cur.get("status", "")); selected_tracks = st.multiselect("Perfiles internos CV/ATS", tracks, default=[x for x in cur.get("tracks", []) if x in tracks])
+            published = st.checkbox("Visible en el portafolio público", cur.get("published", True))
+            featured = st.checkbox("Destacar en la portada", cur.get("featured", False))
             summary = st.text_area("Descripción / caso", cur.get("summary", ""), height=180); note = st.text_area("Nota pública de evidencia / confidencialidad", cur.get("evidence_note", ""))
             save = st.form_submit_button("Guardar proyecto", use_container_width=True)
-        record = {"title":title,"sector":sector,"region":region,"role":role,"status":status,"tracks":selected_tracks,"summary":summary,"evidence_note":note}
+        record = {"title":title,"sector":sector,"region":region,"role":role,"status":status,"tracks":selected_tracks,"summary":summary,"evidence_note":note,"published":published,"featured":featured}
         if save and title.strip():
             if new: items.insert(0, record)
             else: items[idx] = record
@@ -408,167 +448,254 @@ if is_admin_route():
 lang_choice = st.sidebar.radio("Language / Idioma", ["Español", "English"], horizontal=True)
 lang = "en" if lang_choice == "English" else "es"
 data = store.load(lang)
-if not data: data = store.load("es")
+if not data:
+    data = store.load("es")
 p = data.get("personal", {})
-tracks = list(data.get("profile_tracks", {}).keys())
-if not tracks: tracks=["Project Manager"]
+pub = data.get("public_settings", {})
+tracks = list(data.get("profile_tracks", {}).keys()) or ["Project Manager"]
+default_track = pub.get("default_track", tracks[0])
+if default_track not in tracks:
+    default_track = tracks[0]
+
+public_title = pub.get("public_title") or ("Industrial Project & Operations Leader" if lang == "en" else "Líder de Proyectos Industriales y Operaciones")
+public_subtitle = pub.get("public_subtitle") or (
+    "Project Management · Operations · Production · PMO · Industrial Engineering · Supply Chain"
+)
+default_areas_es = [
+    "Dirección de proyectos y PMO",
+    "Operaciones y producción",
+    "Ingeniería y mejora continua",
+    "Supply Chain y transformación digital",
+]
+default_areas_en = [
+    "Project Management & PMO",
+    "Operations & Production",
+    "Industrial Engineering & Continuous Improvement",
+    "Supply Chain & Digital Transformation",
+]
+value_areas = pub.get("value_areas") or (default_areas_en if lang == "en" else default_areas_es)
+
+public_exp = [e for e in data.get("experience", []) if e.get("published", True)]
+public_projects = [x for x in data.get("projects", []) if x.get("published", True)]
+featured_exp = [e for e in public_exp if e.get("featured", False)] or public_exp[:3]
+featured_projects = [x for x in public_projects if x.get("featured", False)] or public_projects[:3]
 
 with st.sidebar:
     st.markdown("### Abraham Yañez")
     st.caption(ui(lang,"portfolio"))
-    track = st.selectbox(ui(lang,"focus"), tracks, index=0)
-    st.caption(data.get("profile_tracks", {}).get(track, {}).get("tagline", ""))
+    st.markdown(f"**{public_title}**")
     st.divider()
-    nav = [("Inicio","home"),("Trayectoria","career"),("Casos de proyecto","projects"),("Competencias","skills"),("Formación","education"),("Evidencias","evidence")]
+    nav = [("Inicio","home"),("Trayectoria","career"),("Casos de proyecto","projects"),("Competencias","skills"),("Formación","education")]
+    if pub.get("show_evidence", True):
+        nav.append(("Evidencias","evidence"))
     display=[ui(lang,key) for _,key in nav]
     chosen = st.radio("Navegación", display, label_visibility="collapsed")
     section = nav[display.index(chosen)][0]
     st.divider()
-    if p.get("linkedin"): st.link_button("LinkedIn", p["linkedin"], use_container_width=True)
+    if pub.get("show_contact", True) and p.get("linkedin"):
+        st.link_button("LinkedIn", p["linkedin"], use_container_width=True)
     st.caption(ui(lang,"visitor_note"))
-
-keywords = data.get("profile_tracks", {}).get(track, {}).get("keywords", [])
 
 if section == "Inicio":
     left,right=st.columns([3.3,1],gap="large")
     with left:
-        st.markdown(f"<div class='hero'><div class='kicker'>Professional Portfolio</div><h1>{p.get('name','')}</h1><div class='muted'><b>{p.get('headline','')}</b></div><p>{p.get('summary','')}</p><div>{''.join(f'<span class="pill">{k}</span>' for k in keywords)}</div></div>", unsafe_allow_html=True)
-        b1,b2,b3=st.columns(3)
-        if p.get("linkedin"): b1.link_button(ui(lang,"linkedin"),p["linkedin"],use_container_width=True)
-        b2.download_button(ui(lang,"download"), build_ats(data,track,lang).encode("utf-8"), file_name=f"Abraham_Yanez_{track.replace(' ','_').replace('/','-')}_{lang}.txt", use_container_width=True)
-        b3.button(ui(lang,"availability"),use_container_width=True,disabled=True)
+        area_html = ''.join(f'<span class="pill">{a}</span>' for a in value_areas)
+        st.markdown(
+            f"<div class='hero'><div class='kicker'>Professional Portfolio</div><h1>{p.get('name','')}</h1>"
+            f"<div class='muted'><b>{public_title}</b></div><p>{p.get('summary','')}</p>"
+            f"<div class='small muted'>{public_subtitle}</div><br><div>{area_html}</div></div>",
+            unsafe_allow_html=True,
+        )
+        if pub.get("show_contact", True):
+            b1,b2,b3=st.columns(3)
+            if p.get("linkedin"):
+                b1.link_button(ui(lang,"linkedin"),p["linkedin"],use_container_width=True)
+            b2.download_button(
+                ui(lang,"download"),
+                build_ats(data,default_track,lang).encode("utf-8"),
+                file_name=f"Abraham_Yanez_{default_track.replace(' ','_').replace('/','-')}_{lang}.txt",
+                use_container_width=True,
+            )
+            b3.button(ui(lang,"availability"),use_container_width=True,disabled=True)
     with right:
         if p.get("photo"):
-            try: st.image(p["photo"],use_container_width=True)
-            except Exception: pass
+            try:
+                st.image(p["photo"],use_container_width=True)
+            except Exception:
+                pass
         else:
             st.markdown("<div class='card' style='text-align:center;padding:2.2rem .8rem'><div style='font-size:3.2rem;font-weight:800'>AY</div></div>",unsafe_allow_html=True)
-        st.markdown(f"**{p.get('location','')}**"); st.caption(p.get("mobility",""))
-    st.markdown(f"### {ui(lang,'selected')}"); st.write(data.get("profile_tracks",{}).get(track,{}).get("tagline",""))
-    cols=st.columns(max(1,min(4,len(data.get("highlights",[])))))
-    for col,item in zip(cols,data.get("highlights",[])[:4]): col.markdown(f"<div class='stat'><div class='kicker'>{item.get('label','')}</div><div class='v'>{item.get('value','')}</div></div>",unsafe_allow_html=True)
-    st.markdown(f"### {ui(lang,'demonstrate')}")
-    exp=[e for e in data.get("experience",[]) if track in e.get("tracks",[])][:3]
-    cols=st.columns(max(1,len(exp)))
-    for col,e in zip(cols,exp): col.markdown(f"<div class='case'><div class='kicker'>{e.get('period','')}</div><div class='card-title'>{e.get('role','')}</div><div class='muted small'>{e.get('company','')}</div><br><div class='small'>{(e.get('bullets') or [''])[0]}</div></div>",unsafe_allow_html=True)
+        st.markdown(f"**{p.get('location','')}**")
+        st.caption(p.get("mobility",""))
+
+    if pub.get("show_highlights", True) and data.get("highlights"):
+        cols=st.columns(max(1,min(4,len(data.get("highlights",[])))))
+        for col,item in zip(cols,data.get("highlights",[])[:4]):
+            col.markdown(f"<div class='stat'><div class='kicker'>{item.get('label','')}</div><div class='v'>{item.get('value','')}</div></div>",unsafe_allow_html=True)
+
+    st.markdown("### " + ("Áreas donde aporto valor" if lang == "es" else "Where I add value"))
+    area_cols = st.columns(2)
+    for i, area in enumerate(value_areas[:4]):
+        area_cols[i % 2].markdown(f"<div class='card'><div class='card-title'>{area}</div></div>", unsafe_allow_html=True)
+
+    if featured_exp:
+        st.markdown("### " + ("Experiencia destacada" if lang == "es" else "Featured experience"))
+        cols=st.columns(max(1,min(3,len(featured_exp[:3]))))
+        for col,e in zip(cols,featured_exp[:3]):
+            col.markdown(
+                f"<div class='case'><div class='kicker'>{e.get('period','')}</div><div class='card-title'>{e.get('role','')}</div>"
+                f"<div class='muted small'>{e.get('company','')}</div><br><div class='small'>{(e.get('bullets') or [''])[0]}</div></div>",
+                unsafe_allow_html=True,
+            )
+
+    if featured_projects:
+        st.markdown("### " + ("Proyectos seleccionados" if lang == "es" else "Selected projects"))
+        cols=st.columns(max(1,min(3,len(featured_projects[:3]))))
+        for col,pr in zip(cols,featured_projects[:3]):
+            col.markdown(
+                f"<div class='case'><div class='kicker'>{pr.get('sector','')} · {pr.get('region','')}</div>"
+                f"<div class='card-title'>{pr.get('title','')}</div><div class='small'>{pr.get('summary','')}</div></div>",
+                unsafe_allow_html=True,
+            )
 
 elif section == "Trayectoria":
-    st.header(f"{ui(lang,'career')} · {track}")
-    exp=[e for e in data.get("experience",[]) if track in e.get("tracks",[])] or data.get("experience",[])
+    st.header(ui(lang,"career"))
+    st.caption("Experiencia seleccionada para la vista pública." if lang == "es" else "Experience selected for the public portfolio.")
     st.markdown("<div class='timeline'>",unsafe_allow_html=True)
-    for e in exp:
-        st.markdown("<div class='timeline-item'>",unsafe_allow_html=True); st.subheader(f"{e.get('role','')} · {e.get('company','')}"); st.caption(f"{e.get('period','')} · {e.get('location','')}")
-        for b in e.get("bullets",[]): st.write("• "+b)
+    for e in public_exp:
+        st.markdown("<div class='timeline-item'>",unsafe_allow_html=True)
+        st.subheader(f"{e.get('role','')} · {e.get('company','')}")
+        st.caption(f"{e.get('period','')} · {e.get('location','')}")
+        for b in e.get("bullets",[]):
+            st.write("• "+b)
         st.markdown("</div>",unsafe_allow_html=True)
     st.markdown("</div>",unsafe_allow_html=True)
 
 elif section == "Casos de proyecto":
-    st.header(ui(lang,"projects")); projects=[x for x in data.get("projects",[]) if track in x.get("tracks",[])] or data.get("projects",[])
-    for i in range(0,len(projects),2):
+    st.header(ui(lang,"projects"))
+    for i in range(0,len(public_projects),2):
         cols=st.columns(2)
-        for col,pr in zip(cols,projects[i:i+2]):
+        for col,pr in zip(cols,public_projects[i:i+2]):
             with col:
-                st.markdown(f"<div class='case'><div class='kicker'>{pr.get('sector','')} · {pr.get('region','')}</div><div class='card-title'>{pr.get('title','')}</div><div class='small'><b>{ui(lang,'role')}:</b> {pr.get('role','')} &nbsp; <b>{ui(lang,'status')}:</b> {pr.get('status','')}</div><br><div>{pr.get('summary','')}</div><br><div class='muted tiny'>{pr.get('evidence_note','')}</div></div>",unsafe_allow_html=True)
+                st.markdown(
+                    f"<div class='case'><div class='kicker'>{pr.get('sector','')} · {pr.get('region','')}</div>"
+                    f"<div class='card-title'>{pr.get('title','')}</div><div class='small'><b>{ui(lang,'role')}:</b> {pr.get('role','')} "
+                    f"&nbsp; <b>{ui(lang,'status')}:</b> {pr.get('status','')}</div><br><div>{pr.get('summary','')}</div>"
+                    f"<br><div class='muted tiny'>{pr.get('evidence_note','')}</div></div>",
+                    unsafe_allow_html=True,
+                )
 
 elif section == "Competencias":
-    st.header(f"{ui(lang,'skills')} · {track}")
-    for area,skills in data.get("skills",{}).items(): st.markdown(f"### {area}"); st.markdown(" ".join(f"`{s}`" for s in skills))
-    st.divider(); st.markdown(f"### {ui(lang,'keywords')}"); st.markdown(" ".join(f"`{s}`" for s in keywords))
+    st.header(ui(lang,"skills"))
+    for area,skills in data.get("skills",{}).items():
+        st.markdown(f"### {area}")
+        st.markdown(" ".join(f"`{s}`" for s in skills))
 
 elif section == "Formación":
     st.header(ui(lang,"credentials"))
-    for e in data.get("education",[]): st.markdown(f"### {e.get('degree','')}"); st.write(e.get("institution","") or ("Institution pending" if lang=="en" else "Institución pendiente")); st.caption(e.get("credential",""))
+    for e in data.get("education",[]):
+        st.markdown(f"### {e.get('degree','')}")
+        st.write(e.get("institution","") or ("Institution pending" if lang=="en" else "Institución pendiente"))
+        st.caption(e.get("credential",""))
     if data.get("certifications"):
-        st.divider(); st.subheader("Certifications" if lang=="en" else "Certificaciones / membresías")
-        for c in data.get("certifications",[]): st.markdown(f"**{c.get('name','')}** — {c.get('status','')}")
+        st.divider()
+        st.subheader("Certifications" if lang=="en" else "Certificaciones / membresías")
+        for c in data.get("certifications",[]):
+            st.markdown(f"**{c.get('name','')}** — {c.get('status','')}")
 
 elif section == "Evidencias":
-    st.header(ui(lang,"evidence")); evs=[e for e in data.get("evidence",[]) if e.get("published",True)]
-    if not evs: st.info(ui(lang,"no_evidence"))
+    st.header(ui(lang,"evidence"))
+    evs=[e for e in data.get("evidence",[]) if e.get("published",True)]
+    if not evs:
+        st.info(ui(lang,"no_evidence"))
     for i in range(0,len(evs),3):
         cols=st.columns(3)
         for col,ev in zip(cols,evs[i:i+3]):
             with col:
-                st.markdown(f"<div class='card'><div class='kicker'>{ev.get('type','')}</div><div class='card-title'>{ev.get('title','')}</div><div class='small'>{ev.get('description','')}</div><div class='muted tiny'>{ev.get('related','')}</div></div>",unsafe_allow_html=True)
+                st.markdown(
+                    f"<div class='card'><div class='kicker'>{ev.get('type','')}</div><div class='card-title'>{ev.get('title','')}</div>"
+                    f"<div class='small'>{ev.get('description','')}</div><div class='muted tiny'>{ev.get('related','')}</div></div>",
+                    unsafe_allow_html=True,
+                )
                 media_render(ev)
 
-
 # ---------------- RECRUITER DECISION CTA ----------------
-st.divider()
-st.markdown("### " + ("¿Deseas continuar con mi candidatura?" if lang == "es" else "Would you like to continue with my application?"))
-st.caption(
-    "Esta respuesta es privada y me permite dar seguimiento correcto al proceso de selección."
-    if lang == "es" else
-    "Your response is private and helps me follow up appropriately on the recruitment process."
-)
-
-if "recruiter_decision" not in st.session_state:
-    st.session_state.recruiter_decision = None
-
-cta_a, cta_b = st.columns(2)
-continue_label = "✅ Sí, continuar con el proceso" if lang == "es" else "✅ Yes, continue the process"
-decline_label = "⛔ Cerrar / declinar candidatura" if lang == "es" else "⛔ Close / decline application"
-if cta_a.button(continue_label, use_container_width=True, type="primary", key="recruiter_continue"):
-    st.session_state.recruiter_decision = "continue"
-    st.session_state.recruiter_feedback_sent = False
-if cta_b.button(decline_label, use_container_width=True, key="recruiter_decline"):
-    st.session_state.recruiter_decision = "decline"
-    st.session_state.recruiter_feedback_sent = False
-
-if st.session_state.recruiter_decision:
-    decision = st.session_state.recruiter_decision
-    positive = decision == "continue"
-    st.info(
-        ("Gracias. Completa estos datos para que pueda dar seguimiento al siguiente paso." if positive else
-         "Gracias por cerrar el ciclo. Tu respuesta evita seguimientos innecesarios y me ayuda a gestionar otras oportunidades.")
+if pub.get("show_recruiter_decision", True):
+    st.divider()
+    st.markdown("### " + ("¿Deseas continuar con mi candidatura?" if lang == "es" else "Would you like to continue with my application?"))
+    st.caption(
+        "Esta respuesta es privada y me permite dar seguimiento correcto al proceso de selección."
         if lang == "es" else
-        ("Thank you. Please complete these details so I can follow up on the next step." if positive else
-         "Thank you for closing the loop. Your response prevents unnecessary follow-ups and helps me manage other opportunities.")
+        "Your response is private and helps me follow up appropriately on the recruitment process."
     )
-    with st.form("recruiter_feedback_form", clear_on_submit=False):
-        recruiter_name = st.text_input("Nombre del reclutador" if lang == "es" else "Recruiter name")
-        company = st.text_input("Empresa" if lang == "es" else "Company")
-        role_title = st.text_input("Vacante / posición" if lang == "es" else "Role / position")
-        email = st.text_input("Correo de contacto (opcional)" if lang == "es" else "Contact email (optional)")
-        message = st.text_area("Comentario / siguiente paso (opcional)" if lang == "es" else "Comment / next step (optional)", height=110)
-        consent = st.checkbox(
-            "Confirmo que deseo enviar esta respuesta al candidato."
+
+    if "recruiter_decision" not in st.session_state:
+        st.session_state.recruiter_decision = None
+
+    cta_a, cta_b = st.columns(2)
+    continue_label = "✅ Sí, continuar con el proceso" if lang == "es" else "✅ Yes, continue the process"
+    decline_label = "⛔ Cerrar / declinar candidatura" if lang == "es" else "⛔ Close / decline application"
+    if cta_a.button(continue_label, use_container_width=True, type="primary", key="recruiter_continue"):
+        st.session_state.recruiter_decision = "continue"
+        st.session_state.recruiter_feedback_sent = False
+    if cta_b.button(decline_label, use_container_width=True, key="recruiter_decline"):
+        st.session_state.recruiter_decision = "decline"
+        st.session_state.recruiter_feedback_sent = False
+
+    if st.session_state.recruiter_decision:
+        decision = st.session_state.recruiter_decision
+        positive = decision == "continue"
+        st.info(
+            ("Gracias. Completa estos datos para que pueda dar seguimiento al siguiente paso." if positive else
+             "Gracias por cerrar el ciclo. Tu respuesta evita seguimientos innecesarios y me ayuda a gestionar otras oportunidades.")
             if lang == "es" else
-            "I confirm that I want to send this response to the candidate."
+            ("Thank you. Please complete these details so I can follow up on the next step." if positive else
+             "Thank you for closing the loop. Your response prevents unnecessary follow-ups and helps me manage other opportunities.")
         )
-        submitted = st.form_submit_button(
-            "Enviar decisión" if lang == "es" else "Send decision",
-            use_container_width=True,
-            type="primary",
-        )
-    if submitted:
-        if not consent:
-            st.error("Confirma el envío de la respuesta." if lang == "es" else "Please confirm that you want to send the response.")
-        elif not company.strip() and not recruiter_name.strip():
-            st.error("Indica al menos tu nombre o empresa." if lang == "es" else "Please provide at least your name or company.")
-        elif st.session_state.get("recruiter_feedback_sent"):
-            st.warning("Esta respuesta ya fue enviada en esta sesión." if lang == "es" else "This response has already been sent in this session.")
-        else:
-            payload = {
-                "decision": decision,
-                "recruiter_name": recruiter_name.strip(),
-                "company": company.strip(),
-                "email": email.strip(),
-                "role_title": role_title.strip(),
-                "message": message.strip(),
-                "language": lang,
-            }
-            ok = store.save_recruiter_feedback(payload)
-            if ok:
-                store.notify_recruiter_feedback(payload)
-                st.session_state.recruiter_feedback_sent = True
-                st.session_state.recruiter_decision = None
-                if positive:
-                    st.success("Respuesta registrada. Gracias por continuar con el proceso." if lang == "es" else "Response recorded. Thank you for continuing the process.")
-                else:
-                    st.success("Candidatura cerrada correctamente. Gracias por informar la decisión." if lang == "es" else "Application closed successfully. Thank you for sharing the decision.")
+        with st.form("recruiter_feedback_form", clear_on_submit=False):
+            recruiter_name = st.text_input("Nombre del reclutador" if lang == "es" else "Recruiter name")
+            company = st.text_input("Empresa" if lang == "es" else "Company")
+            role_title = st.text_input("Vacante / posición" if lang == "es" else "Role / position")
+            email = st.text_input("Correo de contacto (opcional)" if lang == "es" else "Contact email (optional)")
+            message = st.text_area("Comentario / siguiente paso (opcional)" if lang == "es" else "Comment / next step (optional)", height=110)
+            consent = st.checkbox(
+                "Confirmo que deseo enviar esta respuesta al candidato."
+                if lang == "es" else
+                "I confirm that I want to send this response to the candidate."
+            )
+            submitted = st.form_submit_button(
+                "Enviar decisión" if lang == "es" else "Send decision",
+                use_container_width=True,
+                type="primary",
+            )
+        if submitted:
+            if not consent:
+                st.error("Confirma el envío de la respuesta." if lang == "es" else "Please confirm that you want to send the response.")
+            elif not company.strip() and not recruiter_name.strip():
+                st.error("Indica al menos tu nombre o empresa." if lang == "es" else "Please provide at least your name or company.")
+            elif st.session_state.get("recruiter_feedback_sent"):
+                st.warning("Esta respuesta ya fue enviada en esta sesión." if lang == "es" else "This response has already been sent in this session.")
             else:
-                st.error(("No fue posible registrar la respuesta. " if lang == "es" else "The response could not be recorded. ") + (store.last_error or ""))
+                payload = {
+                    "decision": decision,
+                    "recruiter_name": recruiter_name.strip(),
+                    "company": company.strip(),
+                    "email": email.strip(),
+                    "role_title": role_title.strip(),
+                    "message": message.strip(),
+                    "language": lang,
+                }
+                ok = store.save_recruiter_feedback(payload)
+                if ok:
+                    store.notify_recruiter_feedback(payload)
+                    st.session_state.recruiter_feedback_sent = True
+                    st.session_state.recruiter_decision = None
+                    if positive:
+                        st.success("Respuesta registrada. Gracias por continuar con el proceso." if lang == "es" else "Response recorded. Thank you for continuing the process.")
+                    else:
+                        st.success("Candidatura cerrada correctamente. Gracias por informar la decisión." if lang == "es" else "Application closed successfully. Thank you for sharing the decision.")
+                else:
+                    st.error(("No fue posible registrar la respuesta. " if lang == "es" else "The response could not be recorded. ") + (store.last_error or ""))
 
 st.divider()
 st.caption(f"Abraham Yañez Professional Hub · {datetime.now().year}")
