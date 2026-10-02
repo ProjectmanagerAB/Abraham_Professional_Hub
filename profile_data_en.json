@@ -1,0 +1,346 @@
+{
+  "personal": {
+    "name": "Abraham Yañez Manriquez",
+    "headline": "Project Management | Operations | Production | Industrial Engineering | PMO | Supply Chain",
+    "location": "Mérida, Yucatán, Mexico",
+    "email": "abrahamyanez85@gmail.com",
+    "phone": "+52 999 609 7594",
+    "linkedin": "https://www.linkedin.com/in/abraham-yañez-manriquez-b6b001b2",
+    "photo": "",
+    "summary": "Project Management Engineer and Master in Strategic Management with experience leading industrial projects, production, continuous improvement, supplier development, purchasing, logistics, automation, systems implementation and multidisciplinary coordination. Background in manufacturing, metalworking, water treatment, infrastructure and industrial services, with exposure to national and international projects.",
+    "mobility": "Available for relocation and national/international projects."
+  },
+  "profile_tracks": {
+    "Project Manager": {
+      "tagline": "End-to-end management of industrial, technical and multidisciplinary projects.",
+      "keywords": [
+        "Project Management",
+        "Planning",
+        "Procurement",
+        "Contractors",
+        "Cost Control",
+        "Risk",
+        "Client Management",
+        "International Projects"
+      ]
+    },
+    "Operations Manager": {
+      "tagline": "Operations management, continuous improvement, cross-functional coordination and goal achievement.",
+      "keywords": [
+        "Operations",
+        "KPIs",
+        "Continuous Improvement",
+        "Lean",
+        "Cost Reduction",
+        "Supplier Development",
+        "Execution"
+      ]
+    },
+    "Production Manager": {
+      "tagline": "Planning and optimization of metalworking production and industrial processes.",
+      "keywords": [
+        "Production",
+        "Machining",
+        "Welding",
+        "Stamping",
+        "KPIs",
+        "Lean",
+        "Quality",
+        "Capacity"
+      ]
+    },
+    "Plant / Manufacturing Manager": {
+      "tagline": "Industrial leadership focused on productivity, quality, safety and process improvement.",
+      "keywords": [
+        "Manufacturing",
+        "Plant Operations",
+        "Process Improvement",
+        "Safety",
+        "Quality",
+        "Maintenance",
+        "People Leadership"
+      ]
+    },
+    "PMO / Project Controls": {
+      "tagline": "Standardization, executive monitoring and control of project portfolios.",
+      "keywords": [
+        "PMO",
+        "Dashboards",
+        "Governance",
+        "Schedule",
+        "Budget",
+        "Procurement",
+        "Reporting",
+        "Digital Tools"
+      ]
+    },
+    "Supply Chain / Logistics": {
+      "tagline": "Purchasing, supplier development, logistics and material coordination for projects and production.",
+      "keywords": [
+        "Procurement",
+        "Suppliers",
+        "Logistics",
+        "Warehouse",
+        "Materials",
+        "International Shipping",
+        "Cost Optimization"
+      ]
+    }
+  },
+  "highlights": [
+    {
+      "label": "Management",
+      "value": "End-to-end industrial projects"
+    },
+    {
+      "label": "Production",
+      "value": "Metalworking and manufacturing"
+    },
+    {
+      "label": "Operations",
+      "value": "KPIs, Lean, continuous improvement"
+    },
+    {
+      "label": "Digital",
+      "value": "ERP, Monday, dashboards, automation"
+    }
+  ],
+  "experience": [
+    {
+      "role": "Project Manager",
+      "company": "Industrial projects / water treatment",
+      "location": "Mérida, Yucatán / Caribbean",
+      "period": "Jul 2024 – Present",
+      "tracks": [
+        "Project Manager",
+        "Operations Manager",
+        "PMO / Project Controls",
+        "Supply Chain / Logistics"
+      ],
+      "bullets": [
+        "Coordination of industrial projects focused on the design, supply and installation of water treatment systems for hotels and resorts.",
+        "Planning and execution of technical and logistics activities with suppliers, contractors and construction schedules.",
+        "Preparation of technical proposals, budgets and analysis of materials, equipment and specifications.",
+        "Control of purchasing, deliveries and documentation for pumps, valves, electrical panels, sensors and automation systems.",
+        "Follow-up with national and international clients from contract award through delivery and project closeout."
+      ]
+    },
+    {
+      "role": "Production Manager",
+      "company": "Santinel",
+      "location": "Amealco, Querétaro",
+      "period": "2021 – May 2024",
+      "tracks": [
+        "Production Manager",
+        "Operations Manager",
+        "Plant / Manufacturing Manager",
+        "Supply Chain / Logistics"
+      ],
+      "bullets": [
+        "Planning of production processes including machining, welding and stamping.",
+        "Implementation of continuous improvement through Lean, Six Sigma and Kaizen.",
+        "Definition and monitoring of productivity and performance KPIs.",
+        "Supplier development with purchasing and quality teams to ensure cost, lead time and production-plan compliance.",
+        "Delivery of cost-reduction and operational optimization initiatives."
+      ]
+    },
+    {
+      "role": "Project Engineer",
+      "company": "Santinel",
+      "location": "Amealco, Querétaro",
+      "period": "2019 – 2021",
+      "tracks": [
+        "Project Manager",
+        "Production Manager",
+        "Plant / Manufacturing Manager",
+        "Supply Chain / Logistics"
+      ],
+      "bullets": [
+        "Implementation of robotic welding with a UR10 collaborative arm and Fronius 320i welding equipment.",
+        "Installation and commissioning of an electrostatic painting line.",
+        "Development of processes for new metalworking products.",
+        "Development of suppliers for aluminum 360, 380 and Zamak.",
+        "Implementation of ERP BIND across production, warehouse and sales modules.",
+        "Implementation and training of Monday.com for special-project tracking.",
+        "Development and training of warehouse, logistics, purchasing and supplier-payment processes."
+      ]
+    },
+    {
+      "role": "Instructor / Consultant",
+      "company": "State Training Institute (IECA)",
+      "location": "Guanajuato",
+      "period": "2022 – 2024",
+      "tracks": [
+        "Operations Manager",
+        "Plant / Manufacturing Manager",
+        "PMO / Project Controls"
+      ],
+      "bullets": [
+        "Corporate training with technical and soft-skill content adapted to organizational needs.",
+        "Support for cultural change, improvement and business consulting processes."
+      ]
+    },
+    {
+      "role": "Teacher",
+      "company": "SABES",
+      "location": "Silao, Guanajuato",
+      "period": "2018 – 2019",
+      "tracks": [
+        "Operations Manager",
+        "Plant / Manufacturing Manager"
+      ],
+      "bullets": [
+        "Taught administration, personal finance, legal framework, economic environment and humanities subjects.",
+        "Tutoring and student support to improve performance and reduce academic lag."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "title": "International water-treatment project portfolio",
+      "sector": "Hospitality / Water Infrastructure",
+      "region": "Mexico, Jamaica, Belize and the Caribbean",
+      "role": "Project Management",
+      "status": "Portfolio",
+      "tracks": [
+        "Project Manager",
+        "Operations Manager",
+        "PMO / Project Controls",
+        "Supply Chain / Logistics"
+      ],
+      "summary": "Coordination of projects involving engineering, procurement, international logistics, site supervision, contractors and delivery of water-treatment systems.",
+      "evidence_note": "Publish only sanitized material with no contractual or confidential information."
+    },
+    {
+      "title": "Robotic welding implementation",
+      "sector": "Metalworking manufacturing",
+      "region": "Querétaro, Mexico",
+      "role": "Project Engineer",
+      "status": "Completed",
+      "tracks": [
+        "Project Manager",
+        "Production Manager",
+        "Plant / Manufacturing Manager"
+      ],
+      "summary": "Implementation of a robotic welding cell using a UR10 collaborative arm and Fronius 320i equipment as an industrial automation project.",
+      "evidence_note": "Add photographs, scope and productivity metrics when available."
+    },
+    {
+      "title": "Electrostatic painting line",
+      "sector": "Manufacturing",
+      "region": "Querétaro, Mexico",
+      "role": "Project Engineer",
+      "status": "Completed",
+      "tracks": [
+        "Project Manager",
+        "Production Manager",
+        "Plant / Manufacturing Manager"
+      ],
+      "summary": "Installation and commissioning project for an electrostatic painting line used in industrial processes.",
+      "evidence_note": "Capacity, savings, lead times and photographs still to be documented."
+    },
+    {
+      "title": "Operations and project-tracking digitalization",
+      "sector": "Digital Transformation",
+      "region": "Mexico",
+      "role": "Implementation / PMO",
+      "status": "Completed / Ongoing",
+      "tracks": [
+        "Project Manager",
+        "Operations Manager",
+        "PMO / Project Controls",
+        "Plant / Manufacturing Manager"
+      ],
+      "summary": "Implementation of ERP BIND, Monday.com and development of tools for project tracking, procurement, documentation, costs and role-based views.",
+      "evidence_note": "Ideal for screenshots that do not contain sensitive information."
+    },
+    {
+      "title": "Supplier development and logistics optimization",
+      "sector": "Supply Chain",
+      "region": "Mexico",
+      "role": "Engineering / Production",
+      "status": "Completed",
+      "tracks": [
+        "Operations Manager",
+        "Production Manager",
+        "Supply Chain / Logistics",
+        "Plant / Manufacturing Manager"
+      ],
+      "summary": "Development of raw-material suppliers, parcel-shipping optimization and support for purchasing, warehouse and logistics to improve cost, availability and operational continuity.",
+      "evidence_note": "Add quantitative results when available."
+    }
+  ],
+  "education": [
+    {
+      "degree": "Master in Strategic Management",
+      "institution": "",
+      "credential": "Federal professional license registered in CV"
+    },
+    {
+      "degree": "Engineering in Project Management",
+      "institution": "",
+      "credential": "Federal professional license registered in CV"
+    }
+  ],
+  "skills": {
+    "Project Management": [
+      "Project Planning",
+      "Project Execution",
+      "Procurement",
+      "Contractor Coordination",
+      "Risk Follow-up",
+      "Cost Control",
+      "Client Management",
+      "Reporting"
+    ],
+    "Operations": [
+      "KPIs",
+      "Lean",
+      "Six Sigma",
+      "Kaizen",
+      "Continuous Improvement",
+      "Cost Reduction",
+      "Supplier Development"
+    ],
+    "Manufacturing": [
+      "Machining",
+      "Welding",
+      "Stamping",
+      "Robotic Welding",
+      "Electrostatic Painting",
+      "Process Development"
+    ],
+    "Supply Chain": [
+      "Purchasing",
+      "Supplier Development",
+      "Warehouse",
+      "Logistics",
+      "Materials Coordination",
+      "International Shipping"
+    ],
+    "Digital Tools": [
+      "Monday.com",
+      "ERP BIND",
+      "Excel",
+      "Google Workspace",
+      "SharePoint",
+      "Dashboards",
+      "AI-assisted workflows"
+    ]
+  },
+  "certifications": [
+    {
+      "name": "Lean / Six Sigma",
+      "status": "Pending validation and upload of specific certificates"
+    },
+    {
+      "name": "Business consulting",
+      "status": "Mentioned in CV; supporting evidence pending"
+    },
+    {
+      "name": "CIME",
+      "status": "Membership listed in CV"
+    }
+  ],
+  "evidence": []
+}
