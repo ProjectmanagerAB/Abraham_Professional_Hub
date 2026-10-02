@@ -1,0 +1,346 @@
+{
+  "personal": {
+    "name": "Abraham Yañez Manriquez",
+    "headline": "Project Management | Operations | Production | Industrial Engineering | PMO | Supply Chain",
+    "location": "Mérida, Yucatán, México",
+    "email": "abrahamyanez85@gmail.com",
+    "phone": "+52 999 609 7594",
+    "linkedin": "https://www.linkedin.com/in/abraham-yañez-manriquez-b6b001b2",
+    "photo": "",
+    "summary": "Ingeniero en Gestión de Proyectos y Maestro en Administración Estratégica con experiencia en dirección de proyectos industriales, producción, mejora continua, desarrollo de proveedores, compras, logística, automatización, implementación de sistemas y coordinación multidisciplinaria. Experiencia en manufactura, metalmecánica, tratamiento de agua, infraestructura y servicios industriales, con exposición a proyectos nacionales e internacionales.",
+    "mobility": "Disponibilidad para cambio de residencia y proyectos nacionales/internacionales."
+  },
+  "profile_tracks": {
+    "Project Manager": {
+      "tagline": "Dirección integral de proyectos industriales, técnicos y multidisciplinarios.",
+      "keywords": [
+        "Project Management",
+        "Planning",
+        "Procurement",
+        "Contractors",
+        "Cost Control",
+        "Risk",
+        "Client Management",
+        "International Projects"
+      ]
+    },
+    "Operations Manager": {
+      "tagline": "Gestión de operaciones, mejora continua, coordinación interáreas y cumplimiento de objetivos.",
+      "keywords": [
+        "Operations",
+        "KPIs",
+        "Continuous Improvement",
+        "Lean",
+        "Cost Reduction",
+        "Supplier Development",
+        "Execution"
+      ]
+    },
+    "Production Manager": {
+      "tagline": "Planeación y optimización de producción metalmecánica y procesos industriales.",
+      "keywords": [
+        "Production",
+        "Machining",
+        "Welding",
+        "Stamping",
+        "KPIs",
+        "Lean",
+        "Quality",
+        "Capacity"
+      ]
+    },
+    "Plant / Manufacturing Manager": {
+      "tagline": "Liderazgo industrial con enfoque en productividad, calidad, seguridad y mejora de procesos.",
+      "keywords": [
+        "Manufacturing",
+        "Plant Operations",
+        "Process Improvement",
+        "Safety",
+        "Quality",
+        "Maintenance",
+        "People Leadership"
+      ]
+    },
+    "PMO / Project Controls": {
+      "tagline": "Estandarización, seguimiento ejecutivo y control de portafolios de proyectos.",
+      "keywords": [
+        "PMO",
+        "Dashboards",
+        "Governance",
+        "Schedule",
+        "Budget",
+        "Procurement",
+        "Reporting",
+        "Digital Tools"
+      ]
+    },
+    "Supply Chain / Logistics": {
+      "tagline": "Compras, desarrollo de proveedores, logística y coordinación de materiales para proyectos y producción.",
+      "keywords": [
+        "Procurement",
+        "Suppliers",
+        "Logistics",
+        "Warehouse",
+        "Materials",
+        "International Shipping",
+        "Cost Optimization"
+      ]
+    }
+  },
+  "highlights": [
+    {
+      "label": "Gestión",
+      "value": "Proyectos industriales end-to-end"
+    },
+    {
+      "label": "Producción",
+      "value": "Metalmecánica y manufactura"
+    },
+    {
+      "label": "Operaciones",
+      "value": "KPIs, Lean, mejora continua"
+    },
+    {
+      "label": "Digital",
+      "value": "ERP, Monday, dashboards, automatización"
+    }
+  ],
+  "experience": [
+    {
+      "role": "Gerente de Proyectos",
+      "company": "Proyectos industriales / tratamiento de agua",
+      "location": "Mérida, Yucatán / Caribe",
+      "period": "Jul 2024 – Actualidad",
+      "tracks": [
+        "Project Manager",
+        "Operations Manager",
+        "PMO / Project Controls",
+        "Supply Chain / Logistics"
+      ],
+      "bullets": [
+        "Coordinación de proyectos industriales enfocados en diseño, suministro e instalación de sistemas de tratamiento de agua para hoteles y complejos turísticos.",
+        "Planeación y ejecución de actividades técnicas y logísticas con proveedores, contratistas y cronogramas de obra.",
+        "Elaboración de ofertas técnicas, presupuestos y análisis de materiales, equipos y especificaciones.",
+        "Control de compras, entregas y documentación de bombas, válvulas, tableros eléctricos, sensores y automatización.",
+        "Seguimiento con clientes nacionales e internacionales desde contrato hasta entrega y cierre de proyecto."
+      ]
+    },
+    {
+      "role": "Gerente de Producción",
+      "company": "Santinel",
+      "location": "Amealco, Querétaro",
+      "period": "2021 – May 2024",
+      "tracks": [
+        "Production Manager",
+        "Operations Manager",
+        "Plant / Manufacturing Manager",
+        "Supply Chain / Logistics"
+      ],
+      "bullets": [
+        "Planeación del proceso de producción en maquinados, soldadura y troquelado.",
+        "Implementación de mejora continua mediante Lean, Six Sigma y Kaizen.",
+        "Definición y seguimiento de KPIs de productividad y desempeño.",
+        "Desarrollo de proveedores junto con compras y calidad para asegurar costo, tiempo y cumplimiento del plan de producción.",
+        "Impulso de proyectos de reducción de costos y optimización operativa."
+      ]
+    },
+    {
+      "role": "Ingeniero de Proyectos",
+      "company": "Santinel",
+      "location": "Amealco, Querétaro",
+      "period": "2019 – 2021",
+      "tracks": [
+        "Project Manager",
+        "Production Manager",
+        "Plant / Manufacturing Manager",
+        "Supply Chain / Logistics"
+      ],
+      "bullets": [
+        "Implementación de soldadura robótica con brazo UR10 y equipo Fronius 320i.",
+        "Instalación y puesta en marcha de línea de pintura electrostática.",
+        "Desarrollo de procesos para nuevos productos metalmecánicos.",
+        "Desarrollo de proveedores de aluminio 360, 380 y Zamak.",
+        "Implementación de ERP BIND en producción, almacén y ventas.",
+        "Implementación y capacitación de Monday para seguimiento de proyectos especiales.",
+        "Desarrollo y capacitación de procesos de almacén, logística, compras y pagos a proveedores."
+      ]
+    },
+    {
+      "role": "Instructor / Consultor",
+      "company": "Instituto Estatal de Capacitación (IECA)",
+      "location": "Guanajuato",
+      "period": "2022 – 2024",
+      "tracks": [
+        "Operations Manager",
+        "Plant / Manufacturing Manager",
+        "PMO / Project Controls"
+      ],
+      "bullets": [
+        "Capacitación empresarial con contenidos técnicos y habilidades blandas adaptados a necesidades organizacionales.",
+        "Apoyo en procesos de cambio cultural, mejora y consultoría empresarial."
+      ]
+    },
+    {
+      "role": "Docente",
+      "company": "SABES",
+      "location": "Silao, Guanajuato",
+      "period": "2018 – 2019",
+      "tracks": [
+        "Operations Manager",
+        "Plant / Manufacturing Manager"
+      ],
+      "bullets": [
+        "Impartición de materias de administración, finanzas personales, marco legal, entorno económico y humanidades.",
+        "Tutoría y acompañamiento a estudiantes para mejorar desempeño y reducir rezago."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "title": "Portafolio internacional de proyectos de tratamiento de agua",
+      "sector": "Hospitality / Water Infrastructure",
+      "region": "México, Jamaica, Belice y Caribe",
+      "role": "Project Management",
+      "status": "Portfolio",
+      "tracks": [
+        "Project Manager",
+        "Operations Manager",
+        "PMO / Project Controls",
+        "Supply Chain / Logistics"
+      ],
+      "summary": "Coordinación de proyectos con componentes de ingeniería, procurement, logística internacional, supervisión de obra, contratistas y entrega de sistemas de tratamiento de agua.",
+      "evidence_note": "Publicar únicamente material sanitizado y sin información contractual o confidencial."
+    },
+    {
+      "title": "Implementación de soldadura robótica",
+      "sector": "Manufactura metalmecánica",
+      "region": "Querétaro, México",
+      "role": "Ingeniero de Proyectos",
+      "status": "Completed",
+      "tracks": [
+        "Project Manager",
+        "Production Manager",
+        "Plant / Manufacturing Manager"
+      ],
+      "summary": "Implementación de celda de soldadura robótica con brazo UR10 y equipo Fronius 320i como proyecto de automatización industrial.",
+      "evidence_note": "Agregar fotografías, alcance y métricas de productividad si están disponibles."
+    },
+    {
+      "title": "Línea de pintura electrostática",
+      "sector": "Manufactura",
+      "region": "Querétaro, México",
+      "role": "Ingeniero de Proyectos",
+      "status": "Completed",
+      "tracks": [
+        "Project Manager",
+        "Production Manager",
+        "Plant / Manufacturing Manager"
+      ],
+      "summary": "Proyecto de instalación y puesta en marcha de línea de pintura electrostática para procesos industriales.",
+      "evidence_note": "Pendiente documentar capacidad, ahorro, tiempos y fotografías."
+    },
+    {
+      "title": "Digitalización de operación y seguimiento",
+      "sector": "Digital Transformation",
+      "region": "México",
+      "role": "Implementación / PMO",
+      "status": "Completed / Ongoing",
+      "tracks": [
+        "Project Manager",
+        "Operations Manager",
+        "PMO / Project Controls",
+        "Plant / Manufacturing Manager"
+      ],
+      "summary": "Implementación de ERP BIND, Monday y desarrollo de herramientas para seguimiento de proyectos, compras, documentos, costos y vistas por rol.",
+      "evidence_note": "Ideal para capturas de pantalla de sistemas sin datos sensibles."
+    },
+    {
+      "title": "Desarrollo de proveedores y optimización logística",
+      "sector": "Supply Chain",
+      "region": "México",
+      "role": "Engineering / Production",
+      "status": "Completed",
+      "tracks": [
+        "Operations Manager",
+        "Production Manager",
+        "Supply Chain / Logistics",
+        "Plant / Manufacturing Manager"
+      ],
+      "summary": "Desarrollo de proveedores de materia prima, optimización de paquetería, apoyo a compras, almacén y logística para mejorar costo, disponibilidad y continuidad operativa.",
+      "evidence_note": "Agregar resultados cuantitativos si existen."
+    }
+  ],
+  "education": [
+    {
+      "degree": "Maestría en Administración Estratégica",
+      "institution": "",
+      "credential": "Cédula profesional federal registrada en CV"
+    },
+    {
+      "degree": "Ingeniería en Gestión de Proyectos",
+      "institution": "",
+      "credential": "Cédula profesional federal registrada en CV"
+    }
+  ],
+  "skills": {
+    "Project Management": [
+      "Project Planning",
+      "Project Execution",
+      "Procurement",
+      "Contractor Coordination",
+      "Risk Follow-up",
+      "Cost Control",
+      "Client Management",
+      "Reporting"
+    ],
+    "Operations": [
+      "KPIs",
+      "Lean",
+      "Six Sigma",
+      "Kaizen",
+      "Continuous Improvement",
+      "Cost Reduction",
+      "Supplier Development"
+    ],
+    "Manufacturing": [
+      "Machining",
+      "Welding",
+      "Stamping",
+      "Robotic Welding",
+      "Electrostatic Painting",
+      "Process Development"
+    ],
+    "Supply Chain": [
+      "Purchasing",
+      "Supplier Development",
+      "Warehouse",
+      "Logistics",
+      "Materials Coordination",
+      "International Shipping"
+    ],
+    "Digital Tools": [
+      "Monday.com",
+      "ERP BIND",
+      "Excel",
+      "Google Workspace",
+      "SharePoint",
+      "Dashboards",
+      "AI-assisted workflows"
+    ]
+  },
+  "certifications": [
+    {
+      "name": "Lean / Six Sigma",
+      "status": "Pendiente validar y adjuntar constancias específicas"
+    },
+    {
+      "name": "Consultoría empresarial",
+      "status": "Mencionada en CV; pendiente adjuntar evidencia"
+    },
+    {
+      "name": "CIME",
+      "status": "Miembro registrado en CV"
+    }
+  ],
+  "evidence": []
+}
