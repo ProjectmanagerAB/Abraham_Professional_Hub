@@ -3,6 +3,7 @@ import hashlib
 import hmac
 import json
 import re
+import uuid
 from datetime import datetime
 from pathlib import Path
 from urllib.parse import quote
@@ -401,31 +402,88 @@ if is_admin_route():
         st.header("Evidencias multimedia")
         st.caption("Sube únicamente material público o sanitizado. Puedes asociarlo a proyectos, formación, certificaciones o experiencia.")
         items = data.setdefault("evidence", [])
+
+        # IMPORTANT: every evidence record gets a permanent ID. Previous versions
+        # used list indexes (evt0, evt1...) as Streamlit widget keys. Because new
+        # evidence is inserted at the beginning of the list, all indexes moved and
+        # Streamlit reused stale widget state, overwriting records and making them
+        # look duplicated after a rerun/refresh. Permanent IDs eliminate that.
+        migrated = False
+        for ev in items:
+            if not ev.get("_id"):
+                ev["_id"] = uuid.uuid4().hex
+                migrated = True
+        if migrated:
+            # Persist the IDs quietly once so future sessions keep stable keys.
+            store.save(data, "es")
+            st.session_state.admin_data = copy.deepcopy(data)
+
         with st.expander("+ Agregar evidencia", expanded=True):
-            title = st.text_input("Título", key="ev_title")
-            etype = st.selectbox("Tipo", ["Imagen","Video","PDF / documento","Certificación","Carta / reconocimiento","Dashboard / captura","Otro"], key="ev_type")
-            description = st.text_area("Descripción pública", key="ev_desc")
-            related = st.text_input("Relacionado con (proyecto / puesto / formación)", key="ev_related")
-            external = st.text_input("URL externa opcional (YouTube, Vimeo, Drive público, etc.)", key="ev_url")
-            uploaded = st.file_uploader("O subir archivo", type=["png","jpg","jpeg","webp","pdf","mp4","mov","webm"], key="ev_file")
-            if st.button("Publicar evidencia", use_container_width=True):
-                if not title.strip(): st.error("Escribe un título.")
-                elif not external.strip() and not uploaded: st.error("Agrega una URL o un archivo.")
+            # A form with clear_on_submit prevents the previous upload/title from
+            # remaining armed after a successful publish and being submitted twice.
+            with st.form("new_evidence_form", clear_on_submit=True):
+                title = st.text_input("Título")
+                etype = st.selectbox("Tipo", ["Imagen","Video","PDF / documento","Certificación","Carta / reconocimiento","Dashboard / captura","Otro"])
+                description = st.text_area("Descripción pública")
+                related = st.text_input("Relacionado con (proyecto / puesto / formación)")
+                external = st.text_input("URL externa opcional (YouTube, Vimeo, Drive público, etc.)")
+                uploaded = st.file_uploader("O subir archivo", type=["png","jpg","jpeg","webp","pdf","mp4","mov","webm"])
+                publish = st.form_submit_button("Publicar evidencia", use_container_width=True)
+
+            if publish:
+                if not title.strip():
+                    st.error("Escribe un título.")
+                elif not external.strip() and not uploaded:
+                    st.error("Agrega una URL o un archivo.")
                 else:
                     url = external.strip() or store.upload_media(uploaded, "evidence")
-                    items.insert(0,{"title":title.strip(),"type":etype,"description":description.strip(),"related":related.strip(),"url":url,"published":True})
-                    save_admin(data); refresh()
+                    if not url:
+                        st.error("No se pudo cargar el archivo. " + (getattr(store, "last_error", None) or ""))
+                    else:
+                        items.insert(0,{
+                            "_id": uuid.uuid4().hex,
+                            "title": title.strip(),
+                            "type": etype,
+                            "description": description.strip(),
+                            "related": related.strip(),
+                            "url": url,
+                            "published": True,
+                        })
+                        if save_admin(data):
+                            refresh()
+
         st.subheader("Biblioteca publicada")
-        for i,ev in enumerate(items):
+        st.caption("Cada registro usa ahora un identificador estable; agregar o eliminar elementos ya no desplaza el estado de los demás.")
+
+        for i, ev in enumerate(list(items)):
+            evid = ev.get("_id") or uuid.uuid4().hex
             with st.expander(f"{i+1}. {ev.get('title','')}"):
-                ev["title"] = st.text_input("Título", ev.get("title",""), key=f"evt{i}")
-                ev["description"] = st.text_area("Descripción", ev.get("description",""), key=f"evd{i}")
-                ev["related"] = st.text_input("Relacionado con", ev.get("related",""), key=f"evr{i}")
-                ev["url"] = st.text_input("URL / ruta", ev.get("url",""), key=f"evu{i}")
-                ev["published"] = st.checkbox("Visible públicamente", ev.get("published",True), key=f"evp{i}")
-                a,b=st.columns(2)
-                if a.button("Guardar",key=f"evs{i}",use_container_width=True): save_admin(data); refresh()
-                if b.button("Eliminar",key=f"evx{i}",use_container_width=True): items.pop(i); save_admin(data); refresh()
+                with st.form(f"evidence_edit_{evid}"):
+                    edit_title = st.text_input("Título", ev.get("title",""), key=f"evt_{evid}")
+                    edit_description = st.text_area("Descripción", ev.get("description",""), key=f"evd_{evid}")
+                    edit_related = st.text_input("Relacionado con", ev.get("related",""), key=f"evr_{evid}")
+                    edit_url = st.text_input("URL / ruta", ev.get("url",""), key=f"evu_{evid}")
+                    edit_published = st.checkbox("Visible públicamente", ev.get("published",True), key=f"evp_{evid}")
+                    a,b = st.columns(2)
+                    save_ev = a.form_submit_button("Guardar", use_container_width=True)
+                    delete_ev = b.form_submit_button("Eliminar", use_container_width=True)
+
+                if save_ev:
+                    ev.update({
+                        "title": edit_title.strip(),
+                        "description": edit_description.strip(),
+                        "related": edit_related.strip(),
+                        "url": edit_url.strip(),
+                        "published": bool(edit_published),
+                    })
+                    if save_admin(data):
+                        refresh()
+
+                if delete_ev:
+                    # Delete the exact record by permanent ID, never by a shifted index.
+                    data["evidence"] = [x for x in items if x.get("_id") != evid]
+                    if save_admin(data):
+                        refresh()
 
     elif section == "Decisiones RH":
         st.header("Decisiones de reclutadores")
