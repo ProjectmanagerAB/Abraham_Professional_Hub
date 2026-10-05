@@ -5,6 +5,7 @@ import json
 import re
 from datetime import datetime
 from pathlib import Path
+from urllib.parse import quote
 
 import streamlit as st
 
@@ -55,6 +56,21 @@ def refresh():
 
 def split_lines(value):
     return [x.strip() for x in value.splitlines() if x.strip()]
+
+
+def whatsapp_url(phone, message=""):
+    """Build a wa.me URL from the public phone field.
+
+    The profile currently stores a Mexican number with +52. We normalize it to
+    digits only. If a 10-digit Mexican number is entered, prefix country code 52.
+    """
+    digits = re.sub(r"\D", "", phone or "")
+    if len(digits) == 10:
+        digits = "52" + digits
+    if not digits:
+        return ""
+    base = f"https://wa.me/{digits}"
+    return base + (f"?text={quote(message)}" if message else "")
 
 
 def build_ats(data, track, lang="es"):
@@ -222,6 +238,17 @@ if is_admin_route():
             pub["show_evidence"] = st.checkbox("Mostrar sección Evidencias", pub.get("show_evidence", True))
             pub["show_recruiter_decision"] = st.checkbox("Mostrar decisión del reclutador", pub.get("show_recruiter_decision", True))
             pub["show_contact"] = st.checkbox("Mostrar botones LinkedIn / CV", pub.get("show_contact", True))
+            pub["show_whatsapp"] = st.checkbox("Mostrar botón de WhatsApp", pub.get("show_whatsapp", True))
+            pub["whatsapp_message_es"] = st.text_area(
+                "Mensaje precargado de WhatsApp · Español",
+                pub.get("whatsapp_message_es", "Hola Abraham, revisé tu portafolio profesional y me gustaría conversar contigo sobre una oportunidad laboral."),
+                height=90,
+            )
+            pub["whatsapp_message_en"] = st.text_area(
+                "Mensaje precargado de WhatsApp · English",
+                pub.get("whatsapp_message_en", "Hello Abraham, I reviewed your professional portfolio and I would like to speak with you about a career opportunity."),
+                height=90,
+            )
             save = st.form_submit_button("Guardar configuración pública", use_container_width=True)
         if save:
             save_admin(data); refresh()
@@ -494,6 +521,10 @@ with st.sidebar:
     st.divider()
     if pub.get("show_contact", True) and p.get("linkedin"):
         st.link_button("LinkedIn", p["linkedin"], use_container_width=True)
+    wa_msg = pub.get("whatsapp_message_en" if lang == "en" else "whatsapp_message_es", "")
+    wa_link = whatsapp_url(p.get("phone", ""), wa_msg)
+    if pub.get("show_whatsapp", True) and wa_link:
+        st.link_button("💬 WhatsApp", wa_link, use_container_width=True)
     st.caption(ui(lang,"visitor_note"))
 
 if section == "Inicio":
@@ -516,7 +547,12 @@ if section == "Inicio":
                 file_name=f"Abraham_Yanez_{default_track.replace(' ','_').replace('/','-')}_{lang}.txt",
                 use_container_width=True,
             )
-            b3.button(ui(lang,"availability"),use_container_width=True,disabled=True)
+            wa_msg = pub.get("whatsapp_message_en" if lang == "en" else "whatsapp_message_es", "")
+            wa_link = whatsapp_url(p.get("phone", ""), wa_msg)
+            if pub.get("show_whatsapp", True) and wa_link:
+                b3.link_button("💬 WhatsApp", wa_link, use_container_width=True)
+            else:
+                b3.button(ui(lang,"availability"),use_container_width=True,disabled=True)
     with right:
         if p.get("photo"):
             try:
@@ -618,6 +654,23 @@ elif section == "Evidencias":
                     unsafe_allow_html=True,
                 )
                 media_render(ev)
+
+# ---------------- DIRECT CONTACT CTA ----------------
+wa_msg = pub.get("whatsapp_message_en" if lang == "en" else "whatsapp_message_es", "")
+wa_link = whatsapp_url(p.get("phone", ""), wa_msg)
+if pub.get("show_whatsapp", True) and wa_link:
+    st.divider()
+    c1, c2 = st.columns([3, 1])
+    with c1:
+        st.markdown("### " + ("¿Quieres conversar directamente?" if lang == "es" else "Would you like to talk directly?"))
+        st.caption(
+            "Abre una conversación conmigo por WhatsApp para coordinar una entrevista o comentar una oportunidad."
+            if lang == "es" else
+            "Open a WhatsApp conversation with me to coordinate an interview or discuss an opportunity."
+        )
+    with c2:
+        st.write("")
+        st.link_button("💬 " + ("Contactar por WhatsApp" if lang == "es" else "Contact via WhatsApp"), wa_link, use_container_width=True)
 
 # ---------------- RECRUITER DECISION CTA ----------------
 if pub.get("show_recruiter_decision", True):
