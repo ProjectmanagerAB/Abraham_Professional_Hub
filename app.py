@@ -12,6 +12,7 @@ import streamlit as st
 
 from storage import PortfolioStore
 from i18n import ui, translate_profile
+from career_utils import load_career_history
 
 BASE = Path(__file__).parent
 store = PortfolioStore()
@@ -561,6 +562,9 @@ default_areas_en = [
 value_areas = pub.get("value_areas") or (default_areas_en if lang == "en" else default_areas_es)
 
 public_exp = [e for e in data.get("experience", []) if e.get("published", True)]
+for historical in load_career_history():
+    if not any(e.get("company", "").casefold() == historical["company"].casefold() for e in public_exp):
+        public_exp.append({"company": historical["company"], "role": historical["role"], "period": historical["period"] + " (fechas aproximadas)", "location": "México", "bullets": [historical["summary"]], "published": True})
 public_projects = [x for x in data.get("projects", []) if x.get("published", True)]
 featured_exp = [e for e in public_exp if e.get("featured", False)] or public_exp[:3]
 featured_projects = [x for x in public_projects if x.get("featured", False)] or public_projects[:3]
