@@ -41,6 +41,19 @@ footer{visibility:hidden;}
 [data-testid="stToolbar"]{visibility:hidden;height:0;}
 [data-testid="stDecoration"]{display:none;}
 header[data-testid="stHeader"]{background:transparent;}
+
+/* V5 recruiter experience */
+.block-container{max-width:1320px;padding-top:1.5rem}
+.hero{background:linear-gradient(125deg,#122e49,#285676);color:#fff;border:0;border-radius:24px;padding:2.5rem;box-shadow:0 16px 36px rgba(12,37,58,.12)}
+.hero .muted,.hero .small{opacity:.9}
+.hero h1{font-size:clamp(2rem,4vw,3.15rem);line-height:1.1}
+.hero .pill{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.25)}
+.card,.case,.stat{border-radius:16px;box-shadow:0 4px 20px rgba(12,37,58,.05)}
+.stat{border-top:3px solid #c7a052}
+.stButton>button,.stDownloadButton>button,.stLinkButton>a{border-radius:10px;min-height:42px;font-weight:600}
+.stButton>button:focus-visible,.stLinkButton>a:focus-visible{outline:3px solid #c7a052;outline-offset:2px}
+@media(max-width:760px){.block-container{padding:1rem .8rem 3rem}.hero{padding:1.4rem;border-radius:16px}.hero h1{font-size:2rem}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 </style>
 """, unsafe_allow_html=True)
 
@@ -640,6 +653,12 @@ if section == "Inicio":
         for col,item in zip(cols,data.get("highlights",[])[:4]):
             col.markdown(f"<div class='stat'><div class='kicker'>{item.get('label','')}</div><div class='v'>{item.get('value','')}</div></div>",unsafe_allow_html=True)
 
+    st.markdown("### " + ("¿Qué perfil necesitas?" if lang == "es" else "Which profile are you hiring for?"))
+    selected_track = st.selectbox("Perfil profesional" if lang == "es" else "Professional track", tracks, index=tracks.index(default_track) if default_track in tracks else 0, key="recruiter_track")
+    track_info = data.get("profile_tracks", {}).get(selected_track, {})
+    st.info(track_info.get("tagline", ""))
+    st.download_button("Descargar CV orientado a este puesto" if lang == "es" else "Download role-focused resume", build_ats(data, selected_track, lang).encode("utf-8"), file_name="Abraham_Yanez_" + selected_track.replace(" ", "_").replace("/", "-") + "_" + lang + ".txt", mime="text/plain", key="recruiter_cv_download")
+
     st.markdown("### " + ("Áreas donde aporto valor" if lang == "es" else "Where I add value"))
     area_cols = st.columns(2)
     for i, area in enumerate(value_areas[:4]):
@@ -669,12 +688,13 @@ elif section == "Trayectoria":
     st.header(ui(lang,"career"))
     st.caption("Experiencia seleccionada para la vista pública." if lang == "es" else "Experience selected for the public portfolio.")
     st.caption("Las fechas de 2007 a 2018 son aproximadas y están pendientes de confirmación." if lang == "es" else "Dates between 2007 and 2018 are approximate and pending confirmation.")
+    concise = st.toggle("Vista ejecutiva resumida" if lang == "es" else "Concise executive view", value=True, key="career_concise")
     st.markdown("<div class='timeline'>",unsafe_allow_html=True)
     for e in public_exp:
         st.markdown("<div class='timeline-item'>",unsafe_allow_html=True)
         st.subheader(f"{e.get('role','')} · {e.get('company','')}")
         st.caption(f"{e.get('period','')} · {e.get('location','')}")
-        for b in e.get("bullets",[]):
+        for b in (e.get("bullets",[])[:2] if concise else e.get("bullets",[])):
             st.write("• "+b)
         st.markdown("</div>",unsafe_allow_html=True)
     st.markdown("</div>",unsafe_allow_html=True)
