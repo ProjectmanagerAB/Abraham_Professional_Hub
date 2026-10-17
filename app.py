@@ -78,6 +78,9 @@ def whatsapp_url(phone, message=""):
 def build_ats(data, track, lang="es"):
     p = data["personal"]
     selected_exp = [e for e in data.get("experience", []) if track in e.get("tracks", [])]
+    for item in load_career_history():
+        if not any(e.get("company", "").lower() == item["company"].lower() for e in selected_exp):
+            selected_exp.append({"role": item["role"], "company": item["company"], "period": item["period"], "location": "México", "bullets": [item["summary"]]})
     selected_projects = [x for x in data.get("projects", []) if track in x.get("tracks", [])]
     keys = data.get("profile_tracks", {}).get(track, {}).get("keywords", [])
     labels = ({"summary":"PROFESSIONAL SUMMARY","skills":"CORE SKILLS","exp":"EXPERIENCE","proj":"SELECTED PROJECTS","edu":"EDUCATION","tools":"TOOLS & METHODS"}
