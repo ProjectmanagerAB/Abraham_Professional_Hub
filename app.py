@@ -41,6 +41,19 @@ footer{visibility:hidden;}
 [data-testid="stToolbar"]{visibility:hidden;height:0;}
 [data-testid="stDecoration"]{display:none;}
 header[data-testid="stHeader"]{background:transparent;}
+
+/* V5 recruiter experience */
+.block-container{max-width:1320px;padding-top:1.5rem}
+.hero{background:linear-gradient(125deg,#122e49,#285676);color:#fff;border:0;border-radius:24px;padding:2.5rem;box-shadow:0 16px 36px rgba(12,37,58,.12)}
+.hero .muted,.hero .small{opacity:.9}
+.hero h1{font-size:clamp(2rem,4vw,3.15rem);line-height:1.1}
+.hero .pill{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.25)}
+.card,.case,.stat{border-radius:16px;box-shadow:0 4px 20px rgba(12,37,58,.05)}
+.stat{border-top:3px solid #c7a052}
+.stButton>button,.stDownloadButton>button,.stLinkButton>a{border-radius:10px;min-height:42px;font-weight:600}
+.stButton>button:focus-visible,.stLinkButton>a:focus-visible{outline:3px solid #c7a052;outline-offset:2px}
+@media(max-width:760px){.block-container{padding:1rem .8rem 3rem}.hero{padding:1.4rem;border-radius:16px}.hero h1{font-size:2rem}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 </style>
 """, unsafe_allow_html=True)
 
