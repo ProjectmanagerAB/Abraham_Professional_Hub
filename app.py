@@ -114,6 +114,8 @@ def track_text(data, track):
     chunks += [td.get("tagline", ""), " ".join(td.get("keywords", []))]
     for e in data.get("experience", []):
         if track in e.get("tracks", []): chunks += [e.get("role", ""), e.get("company", ""), " ".join(e.get("bullets", []))]
+    for e in load_career_history():
+        chunks += [e["role"], e["company"], e["summary"]]
     for p in data.get("projects", []):
         if track in p.get("tracks", []): chunks += [p.get("title", ""), p.get("sector", ""), p.get("summary", "")]
     for values in data.get("skills", {}).values(): chunks.append(" ".join(values))
