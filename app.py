@@ -190,6 +190,9 @@ if is_admin_route():
     if "admin_data" not in st.session_state:
         st.session_state.admin_data = copy.deepcopy(store.load("es"))
     data = st.session_state.admin_data
+    for h in load_career_history():
+        if not any(e.get("company", "").casefold() == h["company"].casefold() for e in data.get("experience", [])):
+            data.setdefault("experience", []).append({"role": h["role"], "company": h["company"], "period": h["period"] + " (aproximado)", "location": "México", "tracks": list(data.get("profile_tracks", {}).keys()), "bullets": [h["summary"]], "published": True, "featured": False})
     tracks = list(data.get("profile_tracks", {}).keys())
 
     st.markdown(f"<div class='adminbar'><b>Modo administrador</b> · almacenamiento: {store.mode} · edición de la versión maestra en español.</div>", unsafe_allow_html=True)
