@@ -577,6 +577,7 @@ with st.sidebar:
     nav = [("Inicio","home"),("Trayectoria","career"),("Casos de proyecto","projects"),("Competencias","skills"),("Formación","education")]
     if pub.get("show_evidence", True):
         nav.append(("Evidencias","evidence"))
+    nav.append(("Comparar vacante","jobmatch"))
     display=[ui(lang,key) for _,key in nav]
     chosen = st.radio("Navegación", display, label_visibility="collapsed")
     section = nav[display.index(chosen)][0]
@@ -682,6 +683,22 @@ elif section == "Casos de proyecto":
                     f"<br><div class='muted tiny'>{pr.get('evidence_note','')}</div></div>",
                     unsafe_allow_html=True,
                 )
+
+elif section == "Comparar vacante":
+    st.header(ui(lang,"jobmatch"))
+    description = st.text_area(ui(lang,"paste_job"), height=220)
+    if st.button(ui(lang,"analyze")):
+        job_terms = tokenize(description)
+        profile_terms = tokenize(track_text(data, default_track))
+        if not job_terms:
+            st.info("Pega una descripción de vacante para analizarla." if lang == "es" else "Paste a job description to analyze.")
+        else:
+            common = sorted(job_terms & profile_terms)
+            missing = sorted(job_terms - profile_terms)
+            st.metric("Coincidencia de términos" if lang == "es" else "Keyword overlap", f"{len(common)/len(job_terms):.0%}")
+            st.write("**Coincidencias / Matches:**", ", ".join(common[:40]) or "—")
+            st.write("**Por revisar / Not found:**", ", ".join(missing[:40]) or "—")
+            st.caption(ui(lang,"match_note"))
 
 elif section == "Competencias":
     st.header(ui(lang,"skills"))
