@@ -12,6 +12,7 @@ import streamlit as st
 
 from storage import PortfolioStore
 from i18n import ui, translate_profile
+from career_utils import load_career_history
 
 BASE = Path(__file__).parent
 store = PortfolioStore()
@@ -77,6 +78,9 @@ def whatsapp_url(phone, message=""):
 def build_ats(data, track, lang="es"):
     p = data["personal"]
     selected_exp = [e for e in data.get("experience", []) if track in e.get("tracks", [])]
+    for item in load_career_history():
+        if not any(e.get("company", "").lower() == item["company"].lower() for e in selected_exp):
+            selected_exp.append({"role": item["role"], "company": item["company"], "period": item["period"], "location": "México", "bullets": [item["summary"]]})
     selected_projects = [x for x in data.get("projects", []) if track in x.get("tracks", [])]
     keys = data.get("profile_tracks", {}).get(track, {}).get("keywords", [])
     labels = ({"summary":"PROFESSIONAL SUMMARY","skills":"CORE SKILLS","exp":"EXPERIENCE","proj":"SELECTED PROJECTS","edu":"EDUCATION","tools":"TOOLS & METHODS"}
@@ -110,6 +114,8 @@ def track_text(data, track):
     chunks += [td.get("tagline", ""), " ".join(td.get("keywords", []))]
     for e in data.get("experience", []):
         if track in e.get("tracks", []): chunks += [e.get("role", ""), e.get("company", ""), " ".join(e.get("bullets", []))]
+    for e in load_career_history():
+        chunks += [e["role"], e["company"], e["summary"]]
     for p in data.get("projects", []):
         if track in p.get("tracks", []): chunks += [p.get("title", ""), p.get("sector", ""), p.get("summary", "")]
     for values in data.get("skills", {}).values(): chunks.append(" ".join(values))
@@ -184,6 +190,9 @@ if is_admin_route():
     if "admin_data" not in st.session_state:
         st.session_state.admin_data = copy.deepcopy(store.load("es"))
     data = st.session_state.admin_data
+    for h in load_career_history():
+        if not any(e.get("company", "").casefold() == h["company"].casefold() for e in data.get("experience", [])):
+            data.setdefault("experience", []).append({"role": h["role"], "company": h["company"], "period": h["period"] + " (aproximado)", "location": "México", "tracks": list(data.get("profile_tracks", {}).keys()), "bullets": [h["summary"]], "published": True, "featured": False})
     tracks = list(data.get("profile_tracks", {}).keys())
 
     st.markdown(f"<div class='adminbar'><b>Modo administrador</b> · almacenamiento: {store.mode} · edición de la versión maestra en español.</div>", unsafe_allow_html=True)
@@ -561,6 +570,9 @@ default_areas_en = [
 value_areas = pub.get("value_areas") or (default_areas_en if lang == "en" else default_areas_es)
 
 public_exp = [e for e in data.get("experience", []) if e.get("published", True)]
+for historical in load_career_history():
+    if not any(e.get("company", "").casefold() == historical["company"].casefold() for e in public_exp):
+        public_exp.append({"company": historical["company"], "role": historical["role"], "period": historical["period"] + " (fechas aproximadas)", "location": "México", "bullets": [historical["summary"]], "published": True})
 public_projects = [x for x in data.get("projects", []) if x.get("published", True)]
 featured_exp = [e for e in public_exp if e.get("featured", False)] or public_exp[:3]
 featured_projects = [x for x in public_projects if x.get("featured", False)] or public_projects[:3]
@@ -573,6 +585,7 @@ with st.sidebar:
     nav = [("Inicio","home"),("Trayectoria","career"),("Casos de proyecto","projects"),("Competencias","skills"),("Formación","education")]
     if pub.get("show_evidence", True):
         nav.append(("Evidencias","evidence"))
+    nav.append(("Comparar vacante","jobmatch"))
     display=[ui(lang,key) for _,key in nav]
     chosen = st.radio("Navegación", display, label_visibility="collapsed")
     section = nav[display.index(chosen)][0]
@@ -655,6 +668,7 @@ if section == "Inicio":
 elif section == "Trayectoria":
     st.header(ui(lang,"career"))
     st.caption("Experiencia seleccionada para la vista pública." if lang == "es" else "Experience selected for the public portfolio.")
+    st.caption("Las fechas de 2007 a 2018 son aproximadas y están pendientes de confirmación." if lang == "es" else "Dates between 2007 and 2018 are approximate and pending confirmation.")
     st.markdown("<div class='timeline'>",unsafe_allow_html=True)
     for e in public_exp:
         st.markdown("<div class='timeline-item'>",unsafe_allow_html=True)
@@ -678,6 +692,22 @@ elif section == "Casos de proyecto":
                     f"<br><div class='muted tiny'>{pr.get('evidence_note','')}</div></div>",
                     unsafe_allow_html=True,
                 )
+
+elif section == "Comparar vacante":
+    st.header(ui(lang,"jobmatch"))
+    description = st.text_area(ui(lang,"paste_job"), height=220)
+    if st.button(ui(lang,"analyze")):
+        job_terms = tokenize(description)
+        profile_terms = tokenize(track_text(data, default_track))
+        if not job_terms:
+            st.info("Pega una descripción de vacante para analizarla." if lang == "es" else "Paste a job description to analyze.")
+        else:
+            common = sorted(job_terms & profile_terms)
+            missing = sorted(job_terms - profile_terms)
+            st.metric("Coincidencia de términos" if lang == "es" else "Keyword overlap", f"{len(common)/len(job_terms):.0%}")
+            st.write("**Coincidencias / Matches:**", ", ".join(common[:40]) or "—")
+            st.write("**Por revisar / Not found:**", ", ".join(missing[:40]) or "—")
+            st.caption(ui(lang,"match_note"))
 
 elif section == "Competencias":
     st.header(ui(lang,"skills"))

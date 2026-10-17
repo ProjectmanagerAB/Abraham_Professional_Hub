@@ -1,0 +1,46 @@
+{
+  "experiences": [
+    {
+      "company": "Monsanto",
+      "role": "Planeador de mantenimiento",
+      "period": "2007–2009",
+      "summary": "Planificación de mantenimiento preventivo y correctivo de aproximadamente 50 equipos agrícolas; historiales de mantenimiento y coordinación de reparaciones hidráulicas, mecánicas y eléctricas.",
+      "dates_provisional": true
+    },
+    {
+      "company": "Procuraduría General de Justicia de Guanajuato",
+      "role": "Especialista técnico en identificación y documentación",
+      "period": "2009–2011",
+      "summary": "Gestión de procedimientos técnicos de identificación y registros documentales con enfoque en precisión, trazabilidad y cumplimiento.",
+      "dates_provisional": true
+    },
+    {
+      "company": "Tiendas Extra",
+      "role": "Responsable de operaciones de tienda (comisionista)",
+      "period": "2011–2013",
+      "summary": "Administración de ventas, inventarios, proveedores, valores y personal de unidad comercial.",
+      "dates_provisional": true
+    },
+    {
+      "company": "DMS Moldes México",
+      "role": "Gerente de mantenimiento de moldes y herramentales",
+      "period": "2013–2015",
+      "summary": "Coordinación de mantenimiento, reparación y fabricación de moldes de inyección y troqueles industriales.",
+      "dates_provisional": true
+    },
+    {
+      "company": "Infamol",
+      "role": "Ingeniero de proyectos de herramentales",
+      "period": "2015–2017",
+      "summary": "Coordinación de proyectos de moldes y troqueles desde planeación y fabricación hasta pruebas y arranque.",
+      "dates_provisional": true
+    },
+    {
+      "company": "DInnamic Labs",
+      "role": "Agente de ventas técnicas industriales",
+      "period": "2017–2018",
+      "summary": "Representación comercial en México de empresa con sede en China para moldes de inyección y herramentales.",
+      "dates_provisional": true
+    }
+  ]
+}
