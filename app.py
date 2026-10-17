@@ -653,6 +653,12 @@ if section == "Inicio":
         for col,item in zip(cols,data.get("highlights",[])[:4]):
             col.markdown(f"<div class='stat'><div class='kicker'>{item.get('label','')}</div><div class='v'>{item.get('value','')}</div></div>",unsafe_allow_html=True)
 
+    st.markdown("### " + ("¿Qué perfil necesitas?" if lang == "es" else "Which profile are you hiring for?"))
+    selected_track = st.selectbox("Perfil profesional" if lang == "es" else "Professional track", tracks, index=tracks.index(default_track) if default_track in tracks else 0, key="recruiter_track")
+    track_info = data.get("profile_tracks", {}).get(selected_track, {})
+    st.info(track_info.get("tagline", ""))
+    st.download_button("Descargar CV orientado a este puesto" if lang == "es" else "Download role-focused resume", build_ats(data, selected_track, lang).encode("utf-8"), file_name="Abraham_Yanez_" + selected_track.replace(" ", "_").replace("/", "-") + "_" + lang + ".txt", mime="text/plain", key="recruiter_cv_download")
+
     st.markdown("### " + ("Áreas donde aporto valor" if lang == "es" else "Where I add value"))
     area_cols = st.columns(2)
     for i, area in enumerate(value_areas[:4]):
