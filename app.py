@@ -665,6 +665,7 @@ if section == "Inicio":
 elif section == "Trayectoria":
     st.header(ui(lang,"career"))
     st.caption("Experiencia seleccionada para la vista pública." if lang == "es" else "Experience selected for the public portfolio.")
+    st.caption("Las fechas de 2007 a 2018 son aproximadas y están pendientes de confirmación." if lang == "es" else "Dates between 2007 and 2018 are approximate and pending confirmation.")
     st.markdown("<div class='timeline'>",unsafe_allow_html=True)
     for e in public_exp:
         st.markdown("<div class='timeline-item'>",unsafe_allow_html=True)
