@@ -217,7 +217,11 @@ if is_admin_route():
         st.session_state.admin_authenticated = False; refresh()
     c4.link_button("Abrir vista pública", "?", use_container_width=True)
 
-    section = st.sidebar.radio("Administración", ["Panel", "Publicación", "Perfil", "Perfiles internos CV/ATS", "Experiencia", "Proyectos", "Competencias", "Formación", "Certificaciones", "Evidencias", "Decisiones RH", "Traducción EN", "Avanzado"])
+    section = st.sidebar.radio("Administración", ["MI VOZ AI STUDIO", "Panel", "Publicación", "Perfil", "Perfiles internos CV/ATS", "Experiencia", "Proyectos", "Competencias", "Formación", "Certificaciones", "Evidencias", "Decisiones RH", "Traducción EN", "Avanzado"])
+
+    if section == "MI VOZ AI STUDIO":
+        from voice_studio import render_voice_studio
+        render_voice_studio()
 
     if section == "Panel":
         st.header("Panel de administración")
