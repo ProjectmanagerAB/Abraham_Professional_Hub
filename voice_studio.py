@@ -70,7 +70,7 @@ def _master_wav(blob, noise_reduction, trim_silence):
 def render_voice_studio():
     st.header("🎙️ MI VOZ AI STUDIO")
     st.caption("Estudio personal y privado · Android · grabación y remasterización sin costo por uso")
-    tabs = st.tabs(["🎚️ Grabar y mejorar", "🗣️ Clonación IA", "🎧 Episodios", "⚙️ Ayuda"])
+    tabs = st.tabs(["🎚️ Grabar y mejorar", "🗣️ Clonación IA", "🎧 Episodios", "🎼 Música y mezclas", "⚙️ Ayuda"])
     with tabs[0]:
         st.subheader("Tu voz real, con sonido más limpio")
         st.info("Graba una sección de 3 a 5 minutos. Puedes repetir las tomas que necesites. El procesamiento se hace dentro de esta aplicación, sin enviar tu voz a una API de terceros.")
@@ -153,6 +153,9 @@ def render_voice_studio():
             except Exception as exc:
                 st.error("No se pudo consultar el historial: " + str(exc))
     with tabs[3]:
+        from audio_music_module import render_music_studio
+        render_music_studio()
+    with tabs[4]:
         st.markdown("**Primera enseñanza: La caída de los muros de Jericó.** Abre Grabar y mejorar, lee una sección de tu guion y pulsa Mejorar mi grabación. Repite por capítulos.")
         st.info("Este primer modo procesa WAV PCM de 16 bits hasta 10 minutos por toma. Elimina ruido moderado, filtra graves, normaliza volumen y recorta solo extremos. No corrige palabras ni reemplaza la interpretación.")
         st.warning("El archivo limpio se entrega en WAV, no MP3. Guarda las tomas antes de cerrar la pestaña. La unión de capítulos y exportación MP3 quedan pendientes.")
