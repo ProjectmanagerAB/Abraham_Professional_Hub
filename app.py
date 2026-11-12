@@ -170,7 +170,18 @@ small,.muted{color:#657a8b;}
 st.markdown(CSS, unsafe_allow_html=True)
 
 
-PORTFOLIO_SHOWCASE = [["Ingeniería de agua y ósmosis","Water engineering and reverse osmosis","Agua e infraestructura","Water and infrastructure","Coordinación de equipos, contratistas, compras, cronogramas y sistemas de tratamiento de agua para infraestructura hotelera.","Coordination of equipment, contractors, procurement, schedules and water treatment systems for hospitality infrastructure.","💧"],["Rehabilitación de plantas y sistemas UV","Plant rehabilitation and UV systems","Rehabilitación técnica","Technical rehabilitation","Seguimiento a reparaciones, inspecciones, componentes, instalaciones hidráulicas y verificación de alcances técnicos.","Follow-up on repairs, inspections, components, hydraulic installations and technical scope.","🔧"],["Trigeneración y sistemas electromecánicos","Trigeneration and electromechanical systems","Energía","Energy","Coordinación documental, responsabilidades, suministros y seguimiento de interfaces entre generación, enfriamiento y sistemas auxiliares.","Coordination of documents, responsibilities, supplies and interfaces across generation, cooling and auxiliary systems.","⚡"],["Robótica de soldadura","Robotic welding","Automatización industrial","Industrial automation","Implementación técnica de celda UR10 y soldadura Fronius 320i en manufactura metalmecánica.","Technical implementation of UR10 robotic cell and Fronius 320i welding in metalworking.","🦾"],["Pintura electrostática y mejora de procesos","Electrostatic coating and process improvement","Manufactura","Manufacturing","Instalación y puesta en marcha de línea industrial, con enfoque en integración y continuidad de producción.","Installation and startup of an industrial line, focused on integration and production continuity.","🏭"],["Producción, maquinaria y operaciones","Production, machinery and operations","Operaciones industriales","Industrial operations","Experiencia coordinando procesos de maquinado, soldadura, troquelado, planeación, KPIs y proveedores.","Experience coordinating machining, welding, stamping, planning, KPIs and suppliers.","⚙️"],["Logística de proyectos internacionales","International project logistics","Supply chain","Supply chain","Gestión y seguimiento de materiales, entregas, fletes y documentación entre México y el Caribe.","Tracking materials, deliveries, freight and documentation across Mexico and the Caribbean.","🚢"],["Digitalización, PMO y control operativo","Digitalization, PMO and operational controls","Transformación digital","Digital transformation","Implementación de ERP, Monday, herramientas de seguimiento de actividades, compras, costos y documentación.","ERP, Monday and activity, procurement, cost and documentation tracking tools.","📊"],["Desarrollo técnico-comercial","Technical-commercial development","Comercial e ingeniería","Sales and engineering","Vinculación entre necesidades industriales, proveedores de herramentales, especificaciones y propuestas de solución.","Connecting industrial needs, tooling suppliers, specifications and solution proposals.","🤝"],["Capacitación empresarial y consultoría","Corporate training and consulting","Formación de equipos","Team development","Diseño e impartición de contenidos para empresas, procesos de mejora continua y competencias profesionales.","Design and delivery of corporate content, continuous improvement and professional skills.","🎓"],["Docencia y acompañamiento formativo","Teaching and educational guidance","Docencia","Education","Experiencia impartiendo administración, finanzas, marco legal y otras materias; tutoría y acompañamiento a estudiantes.","Teaching management, finance, legal frameworks and related subjects; student tutoring and guidance.","📚"]]
+PORTFOLIO_SHOWCASE = [["Ingeniería de agua y ósmosis","Water engineering and reverse osmosis","Agua e infraestructura","Water and infrastructure","Coordinación de equipos, contratistas, compras, cronogramas y sistemas de tratamiento de agua para infraestructura hotelera.","Coordination of equipment, contractors, procurement, schedules and water treatment systems for hospitality infrastructure.","💧"],["Rehabilitación de plantas y sistemas UV","Plant rehabilitation and UV systems","Rehabilitación técnica","Technical rehabilitation","Seguimiento a reparaciones, inspecciones, componentes, instalaciones hidráulicas y verificación de alcances técnicos.","Follow-up on repairs, inspections, components, hydraulic installations and technical scope.","🔧"],["Trigeneración y sistemas electromecánicos","Trigeneration and electromechanical systems","Energía","Energy","Coordinación documental, responsabilidades, suministros y seguimiento de interfaces entre generación, enfriamiento y sistemas auxiliares.","Coordination of documents, responsibilities, supplies and interfaces across generation, cooling and auxiliary systems.","⚡"],["Robótica de soldadura","Robotic welding","Automatización industrial","Industrial automation","Implementación técnica de celda UR10 y soldadura Fronius 320i en manufactura metalmecánica.","Technical implementation of UR10 robotic cell and Fronius 320i welding in metalworking.","🦾"],["Pintura electrostática y mejora de procesos","Electrostatic coating and process improvement","Manufactura","Manufacturing","Instalación y puesta en marcha de línea industrial, con enfoque en integración y continuidad de producción.","Installation and startup of an industrial line, focused on integration and production continuity.","🏭"],["Producción, maquinaria y operaciones","Production, machinery and operations","Operaciones industriales","Industrial operations","Experiencia coordinando procesos de maquinado, soldadura, troquelado, planeación, KPIs y proveedores.","Experience coordinating machining, welding, stamping, planning, KPIs and suppliers.","⚙️"],["Logística de proyectos internacionales","International project logistics","Supply chain","Supply chain","Gestión y seguimiento de materiales, entregas, fletes y documentación entre México y el Caribe.","Tracking materials, deliveries, freight and documentation across Mexico and the Caribbean.","🚢"],["Digitalización, PMO y control operativo","Digitalization, PMO and operational controls","Transformación digital","Digital transformation","Implementación de ERP, Monday, herramientas de seguimiento de actividades, compras, costos y documentación.","ERP, Monday and activity, procurement, cost and documentation tracking tools.","📊"],["Desarrollo técnico-comercial","Technical-commercial development","Comercial e ingeniería","Sales and engineering","Vinculación entre necesidades industriales, proveedores de herramentales, especificaciones y propuestas de solución.","Connecting industrial needs, tooling suppliers, specifications and solution proposals.","🤝"],["Capacitación empresarial y consultoría","Corporate training and consulting","Formación de equipos","Team development","Diseño e impartición de contenidos para empresas, procesos de mejora continua y competencias profesionales.","Design and delivery of corporate content, continuous improvement and professional skills.","🎓"],["Docencia y acompañamiento formativo","Teaching and educational guidance","Docencia","Education","Experiencia impartiendo administración, finanzas, marco legal y otras materias; tutoría y acompañamiento a estudiantes.","Teaching management, finance, legal frameworks and related subjects; student tutoring and guidance.","📚"],["Movimiento y maniobras de equipos industriales","Industrial equipment movement and handling","Ejecución y logística industrial","Industrial execution and logistics","La coordinación de los proyectos no termina en la compra: incluye preparar accesos, movimientos, recursos y entregas de equipos voluminosos en planta.","Project delivery extends beyond purchasing: it includes access planning, equipment movement, resources and heavy-equipment delivery on site.","🏗️"]]
+
+SHOWCASE_IMAGES = {
+    6: "assets/project_container_loading.svg",
+    11: "assets/project_equipment_movement.svg",
+}
+SHOWCASE_PHOTO_NOTES = {
+    6: ("Fotografía real de carga industrial en contenedor; archivo histórico, sin afirmar cliente o lugar específico.",
+        "Real industrial container-loading photograph from historical archive; no specific client or location claimed."),
+    11: ("Fotografía real de movimiento de equipo industrial en planta; sin atribución a una marca o cliente no verificado.",
+         "Real photograph of industrial equipment movement; no unverified client or brand attribution."),
+}
 
 def esc(value):
     return html.escape(str(value or ""), quote=True)
@@ -449,9 +460,12 @@ if section == 0:
                 panel(title, desc)
     st.markdown("### " + ("Experiencia en acción" if lang == "es" else "Experience in action"))
     st.caption("Casos representativos basados en mi trayectoria. Las ilustraciones son conceptuales." if lang == "es" else "Representative career cases. Visuals are conceptual.")
-    showcase = [PORTFOLIO_SHOWCASE[i] for i in (0, 3, 9)]
+    showcase = [PORTFOLIO_SHOWCASE[i] for i in (0, 6, 11)]
     for col, item in zip(st.columns(3), showcase):
         with col:
+            case_index = PORTFOLIO_SHOWCASE.index(item)
+            if case_index in SHOWCASE_IMAGES:
+                st.image(SHOWCASE_IMAGES[case_index], use_container_width=True)
             panel(item[1] if lang == "en" else item[0], item[5] if lang == "en" else item[4], item[3] if lang == "en" else item[2])
 
 elif section == 1:
@@ -463,20 +477,25 @@ elif section == 1:
 elif section == 2:
     heading("Experiencia en acción" if lang == "es" else "Experience in action",
             "Un portafolio de proyectos, industria, coordinación y formación. Cada caso resume retos y responsabilidades sin exponer información de clientes." if lang == "es" else "A portfolio across projects, industry, coordination and training. Each case summarizes responsibilities without exposing client information.")
-    st.caption("Los símbolos son ilustrativos. Fotografías y videos reales se publicarán únicamente después de revisar su contenido y autorización." if lang == "es" else "Icons are illustrative. Actual photos and videos will only be published after content and permission review.")
+    st.caption("Las fotografías reales aparecen solo en actividades documentadas de movimiento y carga de equipos; los demás símbolos son ilustrativos." if lang == "es" else "Real photos appear only in documented equipment movement and loading cases; other symbols are illustrative.")
     groups = (["Todos","Agua y energía","Manufactura y automatización","Operaciones y digitalización","Capacitación y docencia"] if lang == "es" else
               ["All","Water and energy","Manufacturing and automation","Operations and digital","Training and teaching"])
     group = st.selectbox("Filtrar experiencias" if lang == "es" else "Filter experiences", groups)
     idx = groups.index(group)
-    indexes = [list(range(len(PORTFOLIO_SHOWCASE))),[0,1,2,6],[3,4,5,8],[5,6,7,8],[9,10]][idx]
+    indexes = [list(range(len(PORTFOLIO_SHOWCASE))),[0,1,2,6],[3,4,5,8,11],[5,6,7,8,11],[9,10]][idx]
     items = [PORTFOLIO_SHOWCASE[i] for i in indexes]
     for start in range(0,len(items),2):
         cols = st.columns(2)
         for col,item in zip(cols,items[start:start+2]):
             title, title_en,category,category_en,desc,desc_en,icon = item
+            case_index = PORTFOLIO_SHOWCASE.index(item)
             with col:
                 with st.container(border=True):
-                    st.markdown('<div class="portfolio-art"><span>'+esc(icon)+'</span><strong>'+esc(category_en if lang == "en" else category)+'</strong></div>',unsafe_allow_html=True)
+                    if case_index in SHOWCASE_IMAGES:
+                        st.image(SHOWCASE_IMAGES[case_index], use_container_width=True)
+                        st.caption(SHOWCASE_PHOTO_NOTES[case_index][1 if lang == "en" else 0])
+                    else:
+                        st.markdown('<div class="portfolio-art"><span>'+esc(icon)+'</span><strong>'+esc(category_en if lang == "en" else category)+'</strong></div>',unsafe_allow_html=True)
                     st.markdown("#### " + (title_en if lang == "en" else title))
                     st.write(desc_en if lang == "en" else desc)
     evidence=[ev for ev in data.get("evidence",[]) if ev.get("published",True)]
