@@ -165,22 +165,82 @@ small,.muted{color:#657a8b;}
 @media(max-width:800px){[data-testid="stSidebar"]{min-width:0!important;max-width:320px!important;}}
 .portfolio-art{background:linear-gradient(125deg,#10263c,#23667a);min-height:145px;border-radius:14px;padding:1.2rem;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:.4rem;color:#fff;margin-bottom:1rem}.portfolio-art span{font-size:2.8rem}.portfolio-art strong{font-weight:800;color:#e5f9fa;font-size:.88rem}.stVerticalBlockBorderWrapper{border-radius:16px!important}
 [data-testid="stMain"] [data-testid="stImage"] img {border-radius:17px;box-shadow:0 10px 24px rgba(17,42,62,.12);object-fit:cover;}
+
+/* Photo-led recruiting portfolio */
+[data-testid="stMain"] [data-testid="stVerticalBlockBorderWrapper"] img{
+  width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:12px;
+}
+[data-testid="stMain"] [data-testid="stVerticalBlockBorderWrapper"] h4{color:#173c54!important;font-weight:800!important;}
+[data-testid="stMain"] [data-testid="stVerticalBlockBorderWrapper"] .stCaption{font-size:.76rem;color:#668296!important;}
 </style>
 """
 st.markdown(CSS, unsafe_allow_html=True)
 
 
-PORTFOLIO_SHOWCASE = [["Ingeniería de agua y ósmosis","Water engineering and reverse osmosis","Agua e infraestructura","Water and infrastructure","Coordinación de equipos, contratistas, compras, cronogramas y sistemas de tratamiento de agua para infraestructura hotelera.","Coordination of equipment, contractors, procurement, schedules and water treatment systems for hospitality infrastructure.","💧"],["Rehabilitación de plantas y sistemas UV","Plant rehabilitation and UV systems","Rehabilitación técnica","Technical rehabilitation","Seguimiento a reparaciones, inspecciones, componentes, instalaciones hidráulicas y verificación de alcances técnicos.","Follow-up on repairs, inspections, components, hydraulic installations and technical scope.","🔧"],["Trigeneración y sistemas electromecánicos","Trigeneration and electromechanical systems","Energía","Energy","Coordinación documental, responsabilidades, suministros y seguimiento de interfaces entre generación, enfriamiento y sistemas auxiliares.","Coordination of documents, responsibilities, supplies and interfaces across generation, cooling and auxiliary systems.","⚡"],["Robótica de soldadura","Robotic welding","Automatización industrial","Industrial automation","Implementación técnica de celda UR10 y soldadura Fronius 320i en manufactura metalmecánica.","Technical implementation of UR10 robotic cell and Fronius 320i welding in metalworking.","🦾"],["Pintura electrostática y mejora de procesos","Electrostatic coating and process improvement","Manufactura","Manufacturing","Instalación y puesta en marcha de línea industrial, con enfoque en integración y continuidad de producción.","Installation and startup of an industrial line, focused on integration and production continuity.","🏭"],["Producción, maquinaria y operaciones","Production, machinery and operations","Operaciones industriales","Industrial operations","Experiencia coordinando procesos de maquinado, soldadura, troquelado, planeación, KPIs y proveedores.","Experience coordinating machining, welding, stamping, planning, KPIs and suppliers.","⚙️"],["Logística de proyectos internacionales","International project logistics","Supply chain","Supply chain","Gestión y seguimiento de materiales, entregas, fletes y documentación entre México y el Caribe.","Tracking materials, deliveries, freight and documentation across Mexico and the Caribbean.","🚢"],["Digitalización, PMO y control operativo","Digitalization, PMO and operational controls","Transformación digital","Digital transformation","Implementación de ERP, Monday, herramientas de seguimiento de actividades, compras, costos y documentación.","ERP, Monday and activity, procurement, cost and documentation tracking tools.","📊"],["Desarrollo técnico-comercial","Technical-commercial development","Comercial e ingeniería","Sales and engineering","Vinculación entre necesidades industriales, proveedores de herramentales, especificaciones y propuestas de solución.","Connecting industrial needs, tooling suppliers, specifications and solution proposals.","🤝"],["Capacitación empresarial y consultoría","Corporate training and consulting","Formación de equipos","Team development","Diseño e impartición de contenidos para empresas, procesos de mejora continua y competencias profesionales.","Design and delivery of corporate content, continuous improvement and professional skills.","🎓"],["Docencia y acompañamiento formativo","Teaching and educational guidance","Docencia","Education","Experiencia impartiendo administración, finanzas, marco legal y otras materias; tutoría y acompañamiento a estudiantes.","Teaching management, finance, legal frameworks and related subjects; student tutoring and guidance.","📚"],["Movimiento y maniobras de equipos industriales","Industrial equipment movement and handling","Ejecución y logística industrial","Industrial execution and logistics","La coordinación de los proyectos no termina en la compra: incluye preparar accesos, movimientos, recursos y entregas de equipos voluminosos en planta.","Project delivery extends beyond purchasing: it includes access planning, equipment movement, resources and heavy-equipment delivery on site.","🏗️"]]
+PORTFOLIO_SHOWCASE = [["Ingeniería de agua y ósmosis","Water engineering and reverse osmosis","Agua e infraestructura","Water and infrastructure","Coordinación de equipos, contratistas, compras, cronogramas y sistemas de tratamiento de agua para infraestructura hotelera.","Coordination of equipment, contractors, procurement, schedules and water treatment systems for hospitality infrastructure.","💧"],["Rehabilitación de plantas y sistemas UV","Plant rehabilitation and UV systems","Rehabilitación técnica","Technical rehabilitation","Seguimiento a reparaciones, inspecciones, componentes, instalaciones hidráulicas y verificación de alcances técnicos.","Follow-up on repairs, inspections, components, hydraulic installations and technical scope.","🔧"],["Trigeneración y sistemas electromecánicos","Trigeneration and electromechanical systems","Energía","Energy","Coordinación documental, responsabilidades, suministros y seguimiento de interfaces entre generación, enfriamiento y sistemas auxiliares.","Coordination of documents, responsibilities, supplies and interfaces across generation, cooling and auxiliary systems.","⚡"],["Robótica de soldadura","Robotic welding","Automatización industrial","Industrial automation","Implementación técnica de celda UR10 y soldadura Fronius 320i en manufactura metalmecánica.","Technical implementation of UR10 robotic cell and Fronius 320i welding in metalworking.","🦾"],["Pintura electrostática y mejora de procesos","Electrostatic coating and process improvement","Manufactura","Manufacturing","Instalación y puesta en marcha de línea industrial, con enfoque en integración y continuidad de producción.","Installation and startup of an industrial line, focused on integration and production continuity.","🏭"],["Producción, maquinaria y operaciones","Production, machinery and operations","Operaciones industriales","Industrial operations","Experiencia coordinando procesos de maquinado, soldadura, troquelado, planeación, KPIs y proveedores.","Experience coordinating machining, welding, stamping, planning, KPIs and suppliers.","⚙️"],["Logística de proyectos internacionales","International project logistics","Supply chain","Supply chain","Gestión y seguimiento de materiales, entregas, fletes y documentación entre México y el Caribe.","Tracking materials, deliveries, freight and documentation across Mexico and the Caribbean.","🚢"],["Digitalización, PMO y control operativo","Digitalization, PMO and operational controls","Transformación digital","Digital transformation","Implementación de ERP, Monday, herramientas de seguimiento de actividades, compras, costos y documentación.","ERP, Monday and activity, procurement, cost and documentation tracking tools.","📊"],["Desarrollo técnico-comercial","Technical-commercial development","Comercial e ingeniería","Sales and engineering","Vinculación entre necesidades industriales, proveedores de herramentales, especificaciones y propuestas de solución.","Connecting industrial needs, tooling suppliers, specifications and solution proposals.","🤝"],["Capacitación empresarial y consultoría","Corporate training and consulting","Formación de equipos","Team development","Diseño e impartición de contenidos para empresas, procesos de mejora continua y competencias profesionales.","Design and delivery of corporate content, continuous improvement and professional skills.","🎓"],["Docencia y acompañamiento formativo","Teaching and educational guidance","Docencia","Education","Experiencia impartiendo administración, finanzas, marco legal y otras materias; tutoría y acompañamiento a estudiantes.","Teaching management, finance, legal frameworks and related subjects; student tutoring and guidance.","📚"],["Movimiento y maniobras de equipos industriales","Industrial equipment movement and handling","Ejecución y logística industrial","Industrial execution and logistics","La coordinación de los proyectos no termina en la compra: incluye preparar accesos, movimientos, recursos y entregas de equipos voluminosos en planta.","Project delivery extends beyond purchasing: it includes access planning, equipment movement, resources and heavy-equipment delivery on site.","🏗️"],["Interfaces de obra e instalaciones","Site interfaces and installation works","Infraestructura","Infrastructure","Experiencia profesional en coordinación de frentes de instalación y servicios técnicos en ambientes de obra.","Professional experience coordinating installation workstreams and technical services in construction settings.","🏢"]]
 
 SHOWCASE_IMAGES = {
     6: "assets/project_container_loading.svg",
+    9: "assets/portfolio_classroom_archive.svg",
+    10: "assets/portfolio_group_training.svg",
     11: "assets/project_equipment_movement.svg",
+    12: "assets/portfolio_field_execution.svg",
 }
 SHOWCASE_PHOTO_NOTES = {
-    6: ("Fotografía real de carga industrial en contenedor; archivo histórico, sin afirmar cliente o lugar específico.",
-        "Real industrial container-loading photograph from historical archive; no specific client or location claimed."),
-    11: ("Fotografía real de movimiento de equipo industrial en planta; sin atribución a una marca o cliente no verificado.",
-         "Real photograph of industrial equipment movement; no unverified client or brand attribution."),
+    6: ("Archivo real: carga y embalaje de equipo en contenedor. Proyecto específico no acreditado.",
+        "Real archive: equipment loading and packaging inside container. Specific project not established."),
+    9: ("Archivo real de actividad formativa. No se publican nombres ni se acredita la autoría de la sesión solo por la fotografía.",
+        "Real training activity archive. Participants are unnamed; the photo alone does not prove who delivered the session."),
+    10: ("Archivo real de una actividad grupal formativa; sin identificación de participantes.",
+         "Real archive of a group learning activity; participants are not identified."),
+    11: ("Archivo real de maniobra de equipo en planta. No se identifica cliente.",
+         "Real archive of on-site equipment handling. Client not identified."),
+    12: ("Archivo real de frente de trabajo en instalación; contexto de obra no verificado.",
+         "Real archive of an installation work area; specific project context not verified."),
+}
+CASE_STORIES = {
+  0: {
+    "es": ("El reto: coordinar disciplinas, compras, espacios y contratistas en proyectos de tratamiento de agua.",
+           "Mi participación: planeación técnica, suministros, logística, supervisión y seguimiento a las necesidades del cliente.",
+           "Lo que demuestra: capacidad para organizar sistemas complejos y mantener informadas a distintas partes."),
+    "en": ("The challenge: coordinate disciplines, purchases, site constraints and contractors in water treatment projects.",
+           "My role: technical planning, supplies, logistics, supervision and customer requirements follow-up.",
+           "What it shows: an ability to organize complex systems and keep different stakeholders aligned.")},
+  3: {
+    "es": ("El reto: incorporar automatización de soldadura en un proceso industrial existente.",
+           "Mi participación: implementación de celda UR10 con equipo Fronius 320i y coordinación con operación.",
+           "Lo que demuestra: comprensión práctica de la integración entre tecnología y producción."),
+    "en": ("The challenge: bring robotic welding into an existing industrial operation.",
+           "My role: UR10 cell implementation with Fronius 320i welding and production coordination.",
+           "What it shows: practical integration of technology and production.")},
+  6: {
+    "es": ("El reto: gestionar equipos y materiales entre proveedores, transporte y condiciones de recepción.",
+           "Mi participación: seguimiento de abastecimiento, entregas, documentación y recursos de maniobra.",
+           "Lo que demuestra: enfoque logístico orientado a que el material llegue listo para la ejecución."),
+    "en": ("The challenge: coordinate equipment and materials from suppliers through transport and receiving conditions.",
+           "My role: procurement, delivery, documentation and handling coordination.",
+           "What it shows: delivery-focused logistics that supports site execution.")},
+  9: {
+    "es": ("El reto: adaptar la formación a las necesidades operativas y humanas de cada organización.",
+           "Mi participación: instrucción y consultoría empresarial en competencias técnicas y habilidades de gestión.",
+           "Lo que demuestra: facilidad para comunicar conocimientos y promover aprendizaje aplicado."),
+    "en": ("The challenge: adapt learning to each organization's operational and people needs.",
+           "My role: corporate training and consulting in technical and management capabilities.",
+           "What it shows: communication and applied learning facilitation.")},
+  11: {
+    "es": ("El reto: mover equipos de gran volumen dentro de espacios de trabajo, cuidando recursos y coordinación.",
+           "Mi participación: experiencia vinculada a coordinación industrial y logística de equipos.",
+           "Lo que demuestra: atención a la ejecución física, no solo a la planeación."),
+    "en": ("The challenge: move large equipment through working environments with careful resource coordination.",
+           "My role: experience supporting industrial equipment handling and logistics coordination.",
+           "What it shows: attention to physical execution rather than plans alone.")},
+  12: {
+    "es": ("El reto: integrar actividades de instalación con otros frentes de trabajo e instalaciones existentes.",
+           "Mi contribución profesional: coordinación y seguimiento de actividades en entornos de infraestructura.",
+           "Lo que demuestra: entendimiento de interfaces entre especialidades y condiciones de obra."),
+    "en": ("The challenge: integrate installation activities with other workstreams and existing facilities.",
+           "My professional contribution: coordination and follow-up in infrastructure contexts.",
+           "What it shows: understanding interfaces between trades and site constraints.")},
 }
 
 def esc(value):
@@ -459,8 +519,8 @@ if section == 0:
             with col:
                 panel(title, desc)
     st.markdown("### " + ("Experiencia en acción" if lang == "es" else "Experience in action"))
-    st.caption("Casos representativos basados en mi trayectoria. Las ilustraciones son conceptuales." if lang == "es" else "Representative career cases. Visuals are conceptual.")
-    showcase = [PORTFOLIO_SHOWCASE[i] for i in (0, 6, 11)]
+    st.caption("Historias breves y fotografías recuperadas de archivos profesionales; cada imagen tiene su contexto." if lang == "es" else "Short stories and photos from professional archives; each image includes context.")
+    showcase = [PORTFOLIO_SHOWCASE[i] for i in (6, 9, 11)]
     for col, item in zip(st.columns(3), showcase):
         with col:
             case_index = PORTFOLIO_SHOWCASE.index(item)
@@ -477,12 +537,12 @@ elif section == 1:
 elif section == 2:
     heading("Experiencia en acción" if lang == "es" else "Experience in action",
             "Un portafolio de proyectos, industria, coordinación y formación. Cada caso resume retos y responsabilidades sin exponer información de clientes." if lang == "es" else "A portfolio across projects, industry, coordination and training. Each case summarizes responsibilities without exposing client information.")
-    st.caption("Las fotografías reales aparecen solo en actividades documentadas de movimiento y carga de equipos; los demás símbolos son ilustrativos." if lang == "es" else "Real photos appear only in documented equipment movement and loading cases; other symbols are illustrative.")
+    st.caption("Fotografías del archivo profesional: capturan la actividad indicada, pero no verifican por sí solas una contratación, un resultado o la autoría individual. Se omiten datos confidenciales." if lang == "es" else "Professional archive photos show the depicted activity, but do not alone verify a contract, outcome or individual authorship. Confidential data is excluded.")
     groups = (["Todos","Agua y energía","Manufactura y automatización","Operaciones y digitalización","Capacitación y docencia"] if lang == "es" else
               ["All","Water and energy","Manufacturing and automation","Operations and digital","Training and teaching"])
     group = st.selectbox("Filtrar experiencias" if lang == "es" else "Filter experiences", groups)
     idx = groups.index(group)
-    indexes = [list(range(len(PORTFOLIO_SHOWCASE))),[0,1,2,6],[3,4,5,8,11],[5,6,7,8,11],[9,10]][idx]
+    indexes = [list(range(len(PORTFOLIO_SHOWCASE))),[0,1,2,6],[3,4,5,8,11,12],[5,6,7,8,11,12],[9,10]][idx]
     items = [PORTFOLIO_SHOWCASE[i] for i in indexes]
     for start in range(0,len(items),2):
         cols = st.columns(2)
@@ -497,7 +557,16 @@ elif section == 2:
                     else:
                         st.markdown('<div class="portfolio-art"><span>'+esc(icon)+'</span><strong>'+esc(category_en if lang == "en" else category)+'</strong></div>',unsafe_allow_html=True)
                     st.markdown("#### " + (title_en if lang == "en" else title))
-                    st.write(desc_en if lang == "en" else desc)
+                    if case_index in CASE_STORIES:
+                        for line in CASE_STORIES[case_index][lang]:
+                            st.markdown(line)
+                    else:
+                        st.write(desc_en if lang == "en" else desc)
+    st.divider()
+    st.markdown("### " + ("¿Buscas a alguien que conecte estrategia y ejecución?" if lang == "es" else "Looking for a leader who connects strategy and execution?"))
+    st.write("La experiencia combina gestión industrial, ingeniería, coordinación internacional y formación de equipos." if lang == "es" else "The experience combines industrial management, engineering, international coordination and team development.")
+    if st.button("Contactar para una entrevista" if lang == "es" else "Contact for an interview", on_click=change_page, args=(5,)):
+        pass
     evidence=[ev for ev in data.get("evidence",[]) if ev.get("published",True)]
     if evidence:
         st.markdown("### " + ("Evidencia autorizada" if lang == "es" else "Authorized evidence"))
