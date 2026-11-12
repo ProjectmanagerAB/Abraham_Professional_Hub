@@ -58,6 +58,58 @@ p{line-height:1.65;}
 small,.muted{color:#657a8b;}
 @media(max-width:800px){.block-container{padding:.9rem .8rem 2rem;}.hero{padding:1.5rem;border-radius:17px;}.hero h1{font-size:2.05rem;}.panel{padding:1rem;}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;}}
+
+/* Consistent high-contrast light content regardless of Streamlit theme */
+[data-testid="stAppViewContainer"], [data-testid="stMain"], .main, .block-container {
+  color:#1c354a !important;
+}
+[data-testid="stMain"] [data-testid="stMarkdownContainer"] > p,
+[data-testid="stMain"] [data-testid="stMarkdownContainer"] > div > p,
+[data-testid="stMain"] [data-testid="stMarkdownContainer"] li,
+[data-testid="stMain"] .stCaption,
+[data-testid="stMain"] [data-testid="stWidgetLabel"] p {
+  color:#324e63 !important;
+}
+[data-testid="stMain"] h1,[data-testid="stMain"] h2,
+[data-testid="stMain"] h3,[data-testid="stMain"] h4 {
+  color:#142e44 !important;
+  opacity:1 !important;
+}
+[data-testid="stMain"] .hero h1,[data-testid="stMain"] .hero h3 {
+  color:#fff !important;
+}
+[data-testid="stMain"] .hero p,[data-testid="stMain"] .hero .eyebrow {
+  color:#e0f0f4 !important;
+}
+[data-testid="stMain"] .panel h3 {color:#173b52!important;font-weight:800!important;opacity:1!important;}
+[data-testid="stMain"] .panel p {color:#334e63!important;opacity:1!important;}
+[data-testid="stMain"] .panel .accent {color:#087f86!important;}
+[data-testid="stMain"] .section-intro {color:#586f81!important;}
+[data-testid="stMain"] .metric-card .big {color:#18384f!important;}
+[data-testid="stMain"] .stButton > button,
+[data-testid="stMain"] .stDownloadButton > button,
+[data-testid="stMain"] .stLinkButton > a {
+  border:1px solid #b6cbd8!important;
+  background:#fff!important;
+  color:#163d58!important;
+  font-weight:750!important;
+}
+[data-testid="stMain"] .stButton > button:hover,
+[data-testid="stMain"] .stDownloadButton > button:hover,
+[data-testid="stMain"] .stLinkButton > a:hover {
+  border-color:#118b91!important;
+  background:#e7f6f5!important;
+}
+[data-testid="stMain"] .stSelectbox [data-baseweb="select"] > div {
+  background:#fff!important;color:#203d51!important;
+}
+[data-testid="stMain"] .panel {min-height:170px;display:flex;flex-direction:column;gap:.35rem;}
+[data-testid="stMain"] .panel .caption {color:#647e8e!important;}
+[data-testid="stMain"] .panel h3 {margin:.2rem 0 .25rem!important;line-height:1.38!important;}
+[data-testid="stMain"] .panel p {line-height:1.63!important;}
+[data-testid="stMain"] .stMarkdown h3 {margin-top:.7rem;}
+[data-testid="stMain"] hr {border-color:#dbe5eb;}
+
 </style>
 """
 st.markdown(CSS, unsafe_allow_html=True)
@@ -215,6 +267,10 @@ T = {
     },
 }[lang]
 
+def change_page(index):
+    st.session_state["page_nav"] = T["sections"][index]
+
+
 with st.sidebar:
     st.markdown(f'<div class="side-name">{esc(name)}</div>', unsafe_allow_html=True)
     st.markdown(f'<div class="side-caption">{esc(T["position"])}</div>', unsafe_allow_html=True)
@@ -243,12 +299,8 @@ if section == 0:
             f'<div>{chips}</div></section>', unsafe_allow_html=True,
         )
         btn1, btn2, btn3 = st.columns(3)
-        if btn1.button(T["career"], use_container_width=True):
-            st.session_state["page_nav"] = T["sections"][1]
-            st.rerun()
-        if btn2.button(T["cases"], use_container_width=True):
-            st.session_state["page_nav"] = T["sections"][2]
-            st.rerun()
+        btn1.button(T["career"], use_container_width=True, on_click=change_page, args=(1,))
+        btn2.button(T["cases"], use_container_width=True, on_click=change_page, args=(2,))
         btn3.download_button(T["download"], ats_document(data, lang),
                              "Abraham_Yanez_CV_" + lang + ".txt",
                              mime="text/plain", use_container_width=True)
