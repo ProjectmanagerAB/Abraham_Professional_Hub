@@ -110,6 +110,14 @@ small,.muted{color:#657a8b;}
 [data-testid="stMain"] .stMarkdown h3 {margin-top:.7rem;}
 [data-testid="stMain"] hr {border-color:#dbe5eb;}
 
+
+.career-story {background:linear-gradient(145deg,#fff 0%,#f0f7f8 100%);border:1px solid #d8e5e9;border-left:5px solid #138d94;border-radius:19px;padding:2rem 2.3rem;margin:.75rem 0 2rem;box-shadow:0 8px 28px rgba(16,38,60,.055);}
+[data-testid="stMain"] .career-story h2 {font-size:clamp(1.45rem,2.7vw,2rem)!important;color:#102c42!important;margin:0 0 1rem!important;line-height:1.3;}
+[data-testid="stMain"] .career-story p {font-size:1rem!important;color:#365166!important;line-height:1.82!important;margin:0 0 1rem!important;max-width:980px;}
+[data-testid="stMain"] .career-story .story-lead {font-size:1.12rem!important;font-weight:700!important;color:#173a52!important;}
+.career-story .story-closer {font-size:1.05rem;font-weight:800;line-height:1.7;color:#0f6670;background:#dff1f0;border-radius:11px;padding:1rem 1.15rem;margin:1.1rem 0;}
+.career-story .story-note {font-size:.8rem;font-weight:700;color:#607a8d;letter-spacing:.02em;}
+@media(max-width:800px){.career-story{padding:1.3rem 1.15rem;}}
 </style>
 """
 st.markdown(CSS, unsafe_allow_html=True)
@@ -327,6 +335,57 @@ if section == 0:
     for col, (label, value) in zip(cols, metrics):
         col.markdown(f'<div class="metric-card"><div class="small">{esc(label)}</div>'
                      f'<div class="big">{esc(value)}</div></div>', unsafe_allow_html=True)
+    # Executive narrative: present a clear career progression before the value areas.
+    if lang == "es":
+        story_title = "De la ingeniería a la dirección de proyectos"
+        story_lead = "Mi trayectoria se ha construido donde los planes tienen que convertirse en resultados: en la operación, en la planta y frente a los retos reales de cada proyecto."
+        story_body = (
+            "Comencé desarrollando experiencia en procesos industriales, manufactura y coordinación técnica. "
+            "Ese contacto directo con la producción me enseñó que una buena solución no depende únicamente de la ingeniería: "
+            "requiere personas alineadas, proveedores confiables, recursos disponibles y decisiones oportunas."
+        )
+        story_body_two = (
+            "Con el tiempo asumí responsabilidades en gestión de producción, automatización y mejora continua: "
+            "desde la implementación de soldadura robótica y líneas de pintura electrostática hasta herramientas de control y seguimiento operativo. "
+            "Hoy aplico esa visión integral a proyectos de infraestructura y tratamiento de agua vinculados con México y el Caribe, "
+            "coordinando actividades técnicas, contratistas, suministros y necesidades del cliente."
+        )
+        story_finish = (
+            "Mi fortaleza es conectar la estrategia con la ejecución: entender el problema, ordenar las prioridades "
+            "y dar seguimiento a los compromisos para que el proyecto avance."
+        )
+        story_note = "Ingeniería en Gestión de Proyectos · Maestría en Administración Estratégica"
+    else:
+        story_title = "From engineering to project leadership"
+        story_lead = "My career has grown where plans must become results: on the shop floor, in operations, and in the face of real project challenges."
+        story_body = (
+            "I developed my foundations in industrial processes, manufacturing and technical coordination. "
+            "Hands-on exposure to production taught me that a sound solution depends on more than engineering: "
+            "it takes aligned people, reliable suppliers, available resources and timely decisions."
+        )
+        story_body_two = (
+            "I went on to take responsibility for production management, automation and continuous improvement, "
+            "including robotic welding implementation, electrostatic coating lines and operational tracking tools. "
+            "Today I bring that perspective to infrastructure and water-treatment projects involving Mexico and the Caribbean, "
+            "coordinating technical work, contractors, procurement and customer needs."
+        )
+        story_finish = (
+            "My strength lies in connecting strategy with execution: understanding the challenge, setting priorities "
+            "and following through on commitments to keep projects moving."
+        )
+        story_note = "Engineering in Project Management · Master's in Strategic Management"
+    st.markdown(
+        '<section class="career-story">'
+        '<div class="eyebrow">PROFILE / PERFIL PROFESIONAL</div>'
+        f'<h2>{esc(story_title)}</h2>'
+        f'<p class="story-lead">{esc(story_lead)}</p>'
+        f'<p>{esc(story_body)}</p>'
+        f'<p>{esc(story_body_two)}</p>'
+        f'<div class="story-closer">{esc(story_finish)}</div>'
+        f'<div class="story-note">{esc(story_note)}</div>'
+        '</section>',
+        unsafe_allow_html=True,
+    )
     heading(T["value"], T["value_intro"])
     areas = [
         ("01 · Project Management", "Planeación, control de costos, riesgos, proveedores y coordinación de contratistas."
@@ -343,8 +402,6 @@ if section == 0:
         for col, (title, desc) in zip(cols, areas[i:i+2]):
             with col:
                 panel(title, desc)
-    st.markdown("### " + ("Una síntesis de mi trayectoria" if lang == "es" else "Career at a glance"))
-    st.write(p.get("summary", ""))
     if projects:
         st.markdown("### " + ("Casos relevantes" if lang == "es" else "Featured cases"))
         cols = st.columns(min(3, len(projects)))
