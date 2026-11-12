@@ -1,0 +1,92 @@
+[
+  {
+    "slug": "estacion_soldadura",
+    "group": "industrial",
+    "title": "Estación de soldadura y automatización",
+    "title_en": "Welding station and automation",
+    "tag": "MANUFACTURA",
+    "lead": "Donde la tecnología se encuentra con la producción.",
+    "challenge": "Integración de equipos de soldadura, controles y procesos industriales.",
+    "role": "Participación en implementación y coordinación técnica de soluciones de soldadura."
+  },
+  {
+    "slug": "die_casting",
+    "group": "industrial",
+    "title": "Die casting y procesos metalmecánicos",
+    "title_en": "Die casting and metalworking",
+    "tag": "MANUFACTURA",
+    "lead": "Entender el proceso desde el material hasta la pieza.",
+    "challenge": "Desarrollo de piezas, moldes y procesos de acabado.",
+    "role": "Experiencia en procesos industriales, proveedores y mejora continua."
+  },
+  {
+    "slug": "osmosis_hyatt",
+    "group": "water",
+    "title": "Ósmosis Hyatt e instalaciones",
+    "title_en": "Hyatt reverse osmosis installation",
+    "tag": "AGUA E INFRAESTRUCTURA",
+    "lead": "Soluciones técnicas en instalaciones con múltiples interfaces.",
+    "challenge": "Coordinación de tuberías, equipos y frentes de obra.",
+    "role": "Seguimiento de proveedores, suministros y necesidades de instalación."
+  },
+  {
+    "slug": "osmosis_jamaica",
+    "group": "water",
+    "title": "Ingeniería de ósmosis en Jamaica",
+    "title_en": "Reverse osmosis engineering in Jamaica",
+    "tag": "INGENIERÍA",
+    "lead": "Visualizar la solución antes de ejecutarla.",
+    "challenge": "Distribución de equipos, accesos, espacios e interfaces de ingeniería.",
+    "role": "Coordinación de alcances y requisitos técnicos. Las imágenes son renders, no obra terminada."
+  },
+  {
+    "slug": "ptar_tres_rios",
+    "group": "water",
+    "title": "PTAR Tres Ríos Cancún",
+    "title_en": "Tres Ríos wastewater treatment",
+    "tag": "AGUAS RESIDUALES",
+    "lead": "Entender el funcionamiento real de las plantas.",
+    "challenge": "Instalaciones y componentes electromecánicos en procesos de tratamiento.",
+    "role": "Coordinación de materiales, alcance técnico y seguimiento operativo."
+  },
+  {
+    "slug": "ptar_belice",
+    "group": "water",
+    "title": "PTAR Belice y logística industrial",
+    "title_en": "Belize wastewater infrastructure",
+    "tag": "INFRAESTRUCTURA",
+    "lead": "De la fabricación a las maniobras en sitio.",
+    "challenge": "Transporte, montaje y preparación de equipo de gran formato.",
+    "role": "Experiencia vinculada con suministro, logística y coordinación industrial."
+  },
+  {
+    "slug": "caye_chapel",
+    "group": "water",
+    "title": "Infraestructura Caye Chapel",
+    "title_en": "Caye Chapel infrastructure",
+    "tag": "PROYECTOS INTERNACIONALES",
+    "lead": "El entorno físico es parte del desafío.",
+    "challenge": "Accesos, condicionantes de sitio e interfaces de infraestructura.",
+    "role": "Experiencia en coordinación técnica. Las fotografías no prueban obra terminada."
+  },
+  {
+    "slug": "capacitacion_stps",
+    "group": "people",
+    "title": "Capacitaciones STPS",
+    "title_en": "Workplace training",
+    "tag": "CAPACITACIÓN",
+    "lead": "Desarrollar personas también es generar resultados.",
+    "challenge": "Adaptar contenidos a necesidades de seguridad y desempeño.",
+    "role": "Experiencia en capacitación y desarrollo de habilidades para equipos."
+  },
+  {
+    "slug": "docencia_sabes",
+    "group": "people",
+    "title": "Docencia SABES",
+    "title_en": "SABES teaching",
+    "tag": "DOCENCIA",
+    "lead": "Formar implica comunicar, escuchar y acompañar.",
+    "challenge": "Aprendizaje en entornos educativos y apoyo al estudiante.",
+    "role": "Experiencia docente y tutoría en áreas administrativas."
+  }
+]
