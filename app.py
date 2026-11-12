@@ -164,6 +164,7 @@ small,.muted{color:#657a8b;}
 [data-testid="stSidebar"] [data-testid="stCaptionContainer"] p {color:#bcd0de!important;line-height:1.55!important;}
 @media(max-width:800px){[data-testid="stSidebar"]{min-width:0!important;max-width:320px!important;}}
 .portfolio-art{background:linear-gradient(125deg,#10263c,#23667a);min-height:145px;border-radius:14px;padding:1.2rem;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:.4rem;color:#fff;margin-bottom:1rem}.portfolio-art span{font-size:2.8rem}.portfolio-art strong{font-weight:800;color:#e5f9fa;font-size:.88rem}.stVerticalBlockBorderWrapper{border-radius:16px!important}
+[data-testid="stMain"] [data-testid="stImage"] img {border-radius:17px;box-shadow:0 10px 24px rgba(17,42,62,.12);object-fit:cover;}
 </style>
 """
 st.markdown(CSS, unsafe_allow_html=True)
@@ -361,15 +362,11 @@ if section == 0:
                              "Abraham_Yanez_CV_" + lang + ".txt",
                              mime="text/plain", use_container_width=True)
     with hero_right:
-        if p.get("photo"):
-            st.image(p["photo"], use_container_width=True)
-        else:
-            st.markdown(
-                '<div class="panel" style="text-align:center;padding:2rem .5rem">'
-                '<div style="font-size:4rem;font-weight:800;color:#193e5e">AY</div>'
-                '<div style="color:#718799;font-size:.8rem">Professional portfolio</div></div>',
-                unsafe_allow_html=True,
-            )
+        # Authentic profile photograph extracted from the user's own CV.
+        # An explicitly configured profile photo takes precedence.
+        profile_photo = p.get("photo") or "assets/profile_photo.svg"
+        st.image(profile_photo, use_container_width=True)
+
         st.markdown("**" + p.get("location", "") + "**")
         st.caption(p.get("mobility", T["mobility"]))
     st.write("")
