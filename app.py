@@ -24,7 +24,11 @@ html,body,[class*="css"] {font-family:'DM Sans',sans-serif;}
 [data-testid="stAppViewContainer"]{background:#f6f8fa;}
 [data-testid="stHeader"]{background:transparent;}
 [data-testid="stSidebar"]{background:#10263c;}
-[data-testid="stSidebar"] *{color:#f1f5f9!important;}
+[data-testid="stSidebar"] {background:#10263c;color:#f1f5f9;}
+[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p,
+[data-testid="stSidebar"] [data-testid="stWidgetLabel"] p,
+[data-testid="stSidebar"] .stRadio label p,
+[data-testid="stSidebar"] .stCaption {color:#eef5fa!important;}
 [data-testid="stSidebar"] [data-testid="stRadio"] label{padding:.12rem 0;}
 [data-testid="stSidebar"] .stRadio [role="radiogroup"] label{border-radius:9px;padding:.45rem .55rem;}
 [data-testid="stSidebar"] .stRadio [role="radiogroup"] label:hover{background:#24445f;}
@@ -118,6 +122,47 @@ small,.muted{color:#657a8b;}
 .career-story .story-closer {font-size:1.05rem;font-weight:800;line-height:1.7;color:#0f6670;background:#dff1f0;border-radius:11px;padding:1rem 1.15rem;margin:1.1rem 0;}
 .career-story .story-note {font-size:.8rem;font-weight:700;color:#607a8d;letter-spacing:.02em;}
 @media(max-width:800px){.career-story{padding:1.3rem 1.15rem;}}
+
+/* Sidebar: proper width, hierarchy, and accessible control contrast */
+[data-testid="stSidebar"] {min-width:280px!important;max-width:300px!important;}
+[data-testid="stSidebar"] > div:first-child {width:100%!important;}
+[data-testid="stSidebar"] [data-testid="stVerticalBlock"] {gap:.65rem;}
+[data-testid="stSidebar"] .side-name {color:#fff!important;font-size:1.18rem;line-height:1.4;}
+[data-testid="stSidebar"] .side-caption {color:#c5d8e7!important;line-height:1.55;}
+[data-testid="stSidebar"] [data-testid="stSelectbox"] [data-baseweb="select"] > div {
+  background:#f2f7fa!important;border:1px solid #8fa9bb!important;
+  color:#12334c!important;border-radius:10px!important;min-height:45px;
+}
+[data-testid="stSidebar"] [data-testid="stSelectbox"] [data-baseweb="select"] span,
+[data-testid="stSidebar"] [data-testid="stSelectbox"] [data-baseweb="select"] input,
+[data-testid="stSidebar"] [data-testid="stSelectbox"] [data-baseweb="select"] svg {
+  color:#12334c!important;fill:#12334c!important;
+}
+[data-testid="stSidebar"] [data-testid="stRadio"] [role="radiogroup"] {gap:.25rem;}
+[data-testid="stSidebar"] [data-testid="stRadio"] [role="radiogroup"] label {
+  padding:.58rem .7rem!important;border-radius:10px!important;
+}
+[data-testid="stSidebar"] [data-testid="stRadio"] [role="radiogroup"] label:hover {background:#234a65!important;}
+[data-testid="stSidebar"] [data-testid="stRadio"] [role="radiogroup"] label:has(input:checked) {
+  background:#1b475f!important;box-shadow:inset 3px 0 0 #39c6c5;
+}
+[data-testid="stSidebar"] [data-testid="stRadio"] [role="radiogroup"] label p {font-weight:600!important;font-size:.93rem!important;}
+[data-testid="stSidebar"] .stLinkButton > a,
+[data-testid="stSidebar"] .stDownloadButton > button {
+  background:#f6fafc!important;border:1px solid #b8d3dd!important;
+  color:#12334c!important;font-weight:800!important;border-radius:10px!important;
+  min-height:44px!important;box-shadow:none!important;
+}
+[data-testid="stSidebar"] .stLinkButton > a *,
+[data-testid="stSidebar"] .stDownloadButton > button * {
+  color:#12334c!important;fill:#12334c!important;
+}
+[data-testid="stSidebar"] .stLinkButton > a:hover,
+[data-testid="stSidebar"] .stDownloadButton > button:hover {
+  background:#c7edeb!important;border-color:#2cb5b4!important;
+}
+[data-testid="stSidebar"] [data-testid="stCaptionContainer"] p {color:#bcd0de!important;line-height:1.55!important;}
+@media(max-width:800px){[data-testid="stSidebar"]{min-width:0!important;max-width:320px!important;}}
 </style>
 """
 st.markdown(CSS, unsafe_allow_html=True)
