@@ -207,6 +207,10 @@ small,.muted{color:#657a8b;}
     font-size:.71rem!important;line-height:1.4!important;
 }
 [data-testid="stMain"] [data-testid="stExpander"] {border:1px solid #d9e5e9;border-radius:10px;}
+
+.album-kicker{font-weight:800;font-size:.73rem;letter-spacing:.11em;color:#07868a;margin:.3rem 0;}
+[data-testid="stMain"] [data-testid="stVerticalBlockBorderWrapper"] img{aspect-ratio:1.85;object-fit:cover;border-radius:13px;}
+[data-testid="stMain"] [data-testid="stVerticalBlockBorderWrapper"] h4{color:#17384e!important;font-weight:800!important;}
 </style>
 """
 st.markdown(CSS, unsafe_allow_html=True)
@@ -235,6 +239,37 @@ SHOWCASE_PHOTO_NOTES = {
 }
 # Curated real-photo editorial mosaic. Captions describe what is visible,
 # not a claim of personal authorship, outcome or client affiliation.
+
+@st.cache_data(show_spinner=False)
+def load_album_cases():
+    import json
+    from pathlib import Path
+    path = Path(__file__).parent / "assets" / "album_stories.json"
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def render_album_case(item, language, preview=False):
+    title = item["title_en"] if language == "en" else item["title"]
+    with st.container(border=True):
+        st.image("assets/albums/" + item["slug"] + ".svg", use_container_width=True)
+        st.markdown('<div class="album-kicker">' + esc(item["tag"]) + '</div>', unsafe_allow_html=True)
+        st.markdown("#### " + title)
+        if language == "es":
+            st.markdown("**" + item["lead"] + "**")
+            if not preview:
+                st.markdown("**El reto.** " + item["challenge"])
+                st.markdown("**Mi experiencia.** " + item["role"])
+        else:
+            st.markdown("**Selected project experience.**")
+            if not preview:
+                st.write(item["role"])
+        if not preview:
+            with st.expander("Sobre las imágenes" if language == "es" else "About the images"):
+                st.caption("Imágenes del álbum original facilitado por el titular. Las imágenes de ingeniería pueden ser modelos o renders; no todas representan instalaciones terminadas."
+                           if language == "es" else
+                           "Original album imagery supplied by the owner. Engineering visualizations may be models, not completed installations.")
+
+
 PHOTO_GALLERY = [
     ("assets/project_equipment_handling.svg", "Maniobras de maquinaria", "Industrial equipment handling"),
     ("assets/portfolio_field_execution.svg", "Instalaciones y obra", "Field installations"),
@@ -248,48 +283,19 @@ PHOTO_GALLERY = [
 
 def gallery_collage(language, include_heading=True):
     if include_heading:
-        st.markdown("### " + ("Mi experiencia en imágenes" if language == "es" else "My experience in pictures"))
-        st.caption(
-            "Fotografías auténticas del archivo profesional · Actividades ilustradas, "
-            "sin asociarlas a clientes o resultados no verificados."
-            if language == "es" else
-            "Authentic professional archive photographs · Activities shown, "
-            "without unverified client or outcome claims."
-        )
-    columns = st.columns([1.08, 1, 1.08], gap="small")
-    # An editorial collage: one large and two smaller images per column.
-    groups = ((0, 3), (1, 4, 6), (2, 5))
-    for column, indexes in zip(columns, groups):
-        with column:
-            for i in indexes:
-                photo, caption_es, caption_en = PHOTO_GALLERY[i]
-                st.image(photo, use_container_width=True)
-                st.caption(caption_en if language == "en" else caption_es)
+        st.markdown("### " + ("Proyectos reales en imágenes" if language == "es" else "Projects in pictures"))
+        st.caption("Selección de álbumes originales de ingeniería, manufactura, tratamiento de agua y formación."
+                   if language == "es" else
+                   "Selected original albums from engineering, manufacturing, water treatment and training.")
+    all_items = load_album_cases()
+    picks = [2, 0, 7, 5, 1, 4]
+    cols = st.columns(3, gap="small")
+    for i, index in enumerate(picks):
+        item = all_items[index]
+        with cols[i % 3]:
+            st.image("assets/albums/" + item["slug"] + ".svg", use_container_width=True)
+            st.caption(item["title_en"] if language == "en" else item["title"])
 
-# Photographs from the user's connected Drives, selected by the activity actually shown.
-# They are archival/contextual images, not a claim that each photograph depicts a named project.
-CASE_PHOTO_SETS = {
-    6: [
-        ("assets/project_container_loading.svg", "Embalaje y carga de equipos", "Equipment packing and loading"),
-        ("assets/project_equipment_handling.svg", "Movimiento con montacargas", "Forklift equipment handling"),
-    ],
-    9: [
-        ("assets/portfolio_classroom_archive.svg", "Sesión formativa de archivo", "Archived learning session"),
-        ("assets/portfolio_group_training.svg", "Actividad de capacitación", "Training activity"),
-    ],
-    10: [
-        ("assets/portfolio_group_training.svg", "Grupo en sesión de formación", "Group learning session"),
-        ("assets/portfolio_classroom_archive.svg", "Dinámica de aula", "Classroom activity"),
-    ],
-    11: [
-        ("assets/project_equipment_movement.svg", "Movimiento de maquinaria en planta", "Equipment movement inside a plant"),
-        ("assets/project_equipment_handling.svg", "Maniobra con montacargas", "Forklift handling"),
-    ],
-    12: [
-        ("assets/portfolio_field_execution.svg", "Frente de obra", "Construction work area"),
-        ("assets/portfolio_technical_facility.svg", "Espacio de infraestructura técnica", "Technical infrastructure space"),
-    ],
-}
 
 CASE_STORIES = {
   0: {
@@ -627,120 +633,27 @@ elif section == 1:
 
 elif section == 2:
     heading(
-        "Historias que respaldan mi experiencia" if lang == "es" else "The experience behind the work",
-        "Más que una lista de equipos: retos, responsabilidades y aprendizajes que conectan ingeniería, operaciones y personas."
-        if lang == "es" else
-        "More than an equipment list: challenges, responsibilities and learning connecting engineering, operations and people."
+        "Experiencia que se puede ver" if lang == "es" else "Experience you can see",
+        "Nueve álbumes originales, fotografías reales y relatos claros sobre el valor de coordinar proyectos."
+        if lang == "es" else "Nine original albums with photographs and concise project narratives."
     )
-    st.caption(
-        "Fotografías reales de archivo, asignadas por el tipo de actividad visible; no implican autoría, cliente o resultados específicos no acreditados."
-        if lang == "es" else
-        "Real archive photographs matched to visible activities; no unverified authorship, clients or outcomes are implied."
-    )
-    groups = (
-        ["Todos", "Agua y energía", "Manufactura y automatización",
-         "Operaciones y digitalización", "Capacitación y docencia"]
-        if lang == "es" else
-        ["All", "Water and energy", "Manufacturing and automation",
-         "Operations and digital", "Training and teaching"]
-    )
-    group = st.selectbox(
-        "Explorar proyectos por especialidad" if lang == "es" else "Explore projects by specialty",
-        groups
-    )
-    selected_group = groups.index(group)
-    available = [
-        list(range(len(PORTFOLIO_SHOWCASE))),
-        [0, 1, 2, 6],
-        [3, 4, 5, 8, 11, 12],
-        [5, 6, 7, 8, 11, 12],
-        [9, 10],
-    ][selected_group]
-
-    st.markdown(
-        f'<div class="story-count">{len(available)} '
-        + ("experiencias seleccionadas" if lang == "es" else "selected experiences")
-        + '</div>',
-        unsafe_allow_html=True
-    )
-
-    for start in range(0, len(available), 2):
-        cols = st.columns(2, gap="medium")
-        for col, case_index in zip(cols, available[start:start+2]):
-            item = PORTFOLIO_SHOWCASE[case_index]
-            title, title_en, category, category_en, description, description_en, _ = item
-            current_title = title_en if lang == "en" else title
-            current_category = category_en if lang == "en" else category
-            current_description = description_en if lang == "en" else description
-            photos = CASE_PHOTO_SETS.get(case_index, [])
+    groups = (["Todos", "Agua e infraestructura", "Manufactura", "Capacitación y docencia"]
+              if lang == "es" else ["All", "Water infrastructure", "Manufacturing", "Training and teaching"])
+    group = st.selectbox("Filtrar proyectos" if lang == "es" else "Filter projects", groups)
+    category = [None, "water", "industrial", "people"][groups.index(group)]
+    items = [item for item in load_album_cases() if category is None or item["group"] == category]
+    for index in range(0, len(items), 2):
+        columns = st.columns(2, gap="medium")
+        for col, item in zip(columns, items[index:index+2]):
             with col:
-                with st.container(border=True):
-                    if photos:
-                        if len(photos) > 1:
-                            images = st.columns(2, gap="small")
-                            for photo_col, (path, caption_es, caption_en) in zip(images, photos[:2]):
-                                with photo_col:
-                                    st.image(path, use_container_width=True)
-                                    st.caption(caption_en if lang == "en" else caption_es)
-                        else:
-                            path, caption_es, caption_en = photos[0]
-                            st.image(path, use_container_width=True)
-                            st.caption(caption_en if lang == "en" else caption_es)
-                    else:
-                        st.markdown(
-                            '<div class="case-editorial"><span>'
-                            + esc(current_category.upper())
-                            + '</span><strong>'
-                            + esc(current_title)
-                            + '</strong><small>'
-                            + ("EXPERIENCIA DOCUMENTADA" if lang == "es" else "DOCUMENTED EXPERIENCE")
-                            + '</small></div>',
-                            unsafe_allow_html=True
-                        )
-
-                    st.markdown(
-                        '<div class="case-kicker">' + esc(current_category) + '</div>',
-                        unsafe_allow_html=True
-                    )
-                    st.markdown("#### " + current_title)
-                    narratives = CASE_STORIES.get(case_index, {}).get(lang)
-                    if narratives:
-                        # Let readers scan the story in seconds; detailed context stays expandable.
-                        st.markdown("**" + narratives[0] + "**")
-                        st.markdown(narratives[1])
-                        with st.expander("Valor profesional y aprendizajes" if lang == "es"
-                                         else "Professional value and lessons"):
-                            st.write(narratives[2])
-                    else:
-                        st.write(current_description)
-                    if photos:
-                        st.caption(
-                            "Imágenes del archivo profesional · Asociación por actividad, no prueba del proyecto específico."
-                            if lang == "es" else
-                            "Professional archive images · Activity match, not proof of a specific project."
-                        )
-
+                render_album_case(item, lang)
     st.divider()
-    st.markdown("### " + (
-        "De la estrategia a la ejecución" if lang == "es" else "From strategy to execution"
-    ))
-    st.write(
-        "Busco aportar en proyectos, operaciones y equipos que necesitan coordinación, criterio técnico y seguimiento real."
-        if lang == "es" else
-        "I bring value to projects, operations and teams requiring coordination, technical judgment and practical follow-through."
-    )
-    st.button(
-        "Conversemos sobre una oportunidad" if lang == "es" else "Let's discuss an opportunity",
-        on_click=change_page, args=(5,), use_container_width=True
-    )
-    evidence = [ev for ev in data.get("evidence", []) if ev.get("published", True)]
-    if evidence:
-        st.markdown("### " + ("Más evidencias públicas" if lang == "es" else "More public evidence"))
-        for ev in evidence:
-            panel(ev.get("title"), ev.get("description"), ev.get("type"))
-            url = ev.get("url", "")
-            if url.startswith(("https://", "http://")):
-                st.link_button("Ver archivo" if lang == "es" else "Open file", url)
+    st.markdown("### " + ("¿Tu empresa necesita liderazgo de proyectos?" if lang == "es"
+                         else "Looking for project leadership?"))
+    st.write("Ingeniería, operaciones, manufactura y formación reunidas en una trayectoria profesional."
+             if lang == "es" else "Engineering, operations, manufacturing and training throughout a professional career.")
+    st.button("Contactar para entrevista" if lang == "es" else "Contact for interview",
+              on_click=change_page, args=(5,), use_container_width=True)
 
 elif section == 3:
     heading(T["skills"], T["skills_intro"])
