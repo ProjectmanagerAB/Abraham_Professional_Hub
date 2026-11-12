@@ -218,7 +218,7 @@ T = {
 with st.sidebar:
     st.markdown(f'<div class="side-name">{esc(name)}</div>', unsafe_allow_html=True)
     st.markdown(f'<div class="side-caption">{esc(T["position"])}</div>', unsafe_allow_html=True)
-    selected = st.radio("Navigation" if lang == "en" else "Navegación", T["sections"], label_visibility="collapsed")
+    selected = st.radio("Navigation" if lang == "en" else "Navegación", T["sections"], label_visibility="collapsed", key="page_nav")
     st.divider()
     if p.get("linkedin"):
         st.link_button("LinkedIn", p["linkedin"], use_container_width=True)
@@ -244,10 +244,10 @@ if section == 0:
         )
         btn1, btn2, btn3 = st.columns(3)
         if btn1.button(T["career"], use_container_width=True):
-            st.session_state["jump_to"] = 1
+            st.session_state["page_nav"] = T["sections"][1]
             st.rerun()
         if btn2.button(T["cases"], use_container_width=True):
-            st.session_state["jump_to"] = 2
+            st.session_state["page_nav"] = T["sections"][2]
             st.rerun()
         btn3.download_button(T["download"], ats_document(data, lang),
                              "Abraham_Yanez_CV_" + lang + ".txt",
@@ -262,7 +262,7 @@ if section == 0:
                 '<div style="color:#718799;font-size:.8rem">Professional portfolio</div></div>',
                 unsafe_allow_html=True,
             )
-        st.markdown("**" + esc(p.get("location", "")) + "**")
+        st.markdown("**" + p.get("location", "") + "**")
         st.caption(p.get("mobility", T["mobility"]))
     st.write("")
     metrics = [
