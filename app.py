@@ -359,37 +359,6 @@ def phone_link(number, lang):
     return "https://wa.me/" + digits + "?text=" + quote(message)
 
 
-def ats_document(data, lang, track=None):
-    personal = data.get("personal", {})
-    title = track or "Project Manager"
-    exp = data.get("experience", [])
-    if track:
-        exp = [e for e in exp if title in e.get("tracks", [])]
-    lines = [
-        personal.get("name", "Abraham Yañez Manriquez"),
-        title,
-        " | ".join([personal.get("location", ""), personal.get("email", ""),
-                    personal.get("phone", ""), personal.get("linkedin", "")]),
-        "", "PROFILE" if lang == "en" else "PERFIL PROFESIONAL",
-        personal.get("summary", ""), "",
-        "EXPERIENCE" if lang == "en" else "EXPERIENCIA",
-    ]
-    for job in exp:
-        lines += [f"{job.get('role','')} | {job.get('company','')} | {job.get('period','')}",
-                  *["• " + str(b) for b in job.get("bullets", [])], ""]
-    lines.append("PROJECTS" if lang == "en" else "PROYECTOS")
-    for item in data.get("projects", []):
-        if item.get("published", True):
-            lines += [item.get("title", ""), item.get("summary", ""), ""]
-    lines.append("SKILLS" if lang == "en" else "COMPETENCIAS")
-    for group, skills in data.get("skills", {}).items():
-        lines.append(group + ": " + ", ".join(skills))
-    lines += ["", "EDUCATION" if lang == "en" else "FORMACIÓN"]
-    for item in data.get("education", []):
-        lines.append(item.get("degree", "") + " | " + item.get("institution", ""))
-    return "\n".join(lines).encode("utf-8")
-
-
 def panel(title, desc, eyebrow="", meta=""):
     st.markdown(
         '<div class="panel">'
