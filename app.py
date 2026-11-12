@@ -8,6 +8,7 @@ import streamlit as st
 
 from storage import PortfolioStore
 from career_utils import load_career_history
+from cv_pdf import build_cv_pdf
 
 st.set_page_config(
     page_title="Abraham Yañez Manriquez | Proyectos y Operaciones",
@@ -448,7 +449,7 @@ T = {
         "education_intro": "Preparación académica y competencias profesionales.",
         "contact": "Conversemos sobre tu vacante",
         "contact_intro": "Abierto a posiciones de gerencia, coordinación y ejecución de proyectos, operaciones y manufactura.",
-        "download": "Descargar CV ATS",
+        "download": "Descargar CV PDF",
         "linked": "LinkedIn",
         "message": "WhatsApp",
         "mail": "Correo electrónico",
@@ -456,7 +457,7 @@ T = {
         "cases": "Explorar proyectos",
         "mobility": "Movilidad nacional e internacional",
         "track": "Personaliza el CV para una posición",
-        "track_note": "Elige una orientación profesional para descargar un CV en formato de texto compatible con filtros ATS.",
+        "track_note": "Elige un puesto objetivo para descargar un CV ejecutivo en PDF, con texto seleccionable y estructura compatible con ATS.",
         "evidence": "Evidencia pública",
         "evidence_empty": "Las evidencias visuales se incorporarán cuando existan materiales autorizados para publicación.",
         "closing": "Transformar planes técnicos en ejecución coordinada.",
@@ -479,7 +480,7 @@ T = {
         "education_intro": "Academic qualifications and professional capabilities.",
         "contact": "Let's discuss your opportunity",
         "contact_intro": "Open to management, coordination and delivery roles in projects, operations and manufacturing.",
-        "download": "Download ATS resume",
+        "download": "Download PDF resume",
         "linked": "LinkedIn",
         "message": "WhatsApp",
         "mail": "Email",
@@ -487,7 +488,7 @@ T = {
         "cases": "Explore projects",
         "mobility": "Available for domestic and international relocation",
         "track": "Tailor the resume to a role",
-        "track_note": "Choose a professional focus to download a plain-text resume suitable for ATS screening.",
+        "track_note": "Choose a target role to download an executive PDF resume with selectable, ATS-readable text.",
         "evidence": "Public evidence",
         "evidence_empty": "Visual evidence will be added once materials are authorized for publication.",
         "closing": "Turning technical plans into coordinated execution.",
@@ -507,8 +508,8 @@ with st.sidebar:
         st.link_button("LinkedIn", p["linkedin"], use_container_width=True)
     if whatsapp:
         st.link_button("WhatsApp", whatsapp, use_container_width=True)
-    st.download_button(T["download"], ats_document(data, lang), "Abraham_Yanez_CV_" + lang + ".txt",
-                       mime="text/plain", use_container_width=True)
+    st.download_button(T["download"], build_cv_pdf(data, lang), "Abraham_Yanez_CV_" + lang + ".pdf",
+                       mime="application/pdf", use_container_width=True)
     st.caption(T["mobility"])
 
 section = T["sections"].index(selected)
@@ -528,9 +529,9 @@ if section == 0:
         btn1, btn2, btn3 = st.columns(3)
         btn1.button(T["career"], use_container_width=True, on_click=change_page, args=(1,))
         btn2.button(T["cases"], use_container_width=True, on_click=change_page, args=(2,))
-        btn3.download_button(T["download"], ats_document(data, lang),
-                             "Abraham_Yanez_CV_" + lang + ".txt",
-                             mime="text/plain", use_container_width=True)
+        btn3.download_button(T["download"], build_cv_pdf(data, lang),
+                             "Abraham_Yanez_CV_" + lang + ".pdf",
+                             mime="application/pdf", use_container_width=True)
     with hero_right:
         # Authentic profile photograph extracted from the user's own CV.
         # An explicitly configured profile photo takes precedence.
@@ -687,15 +688,15 @@ elif section == 5:
                        use_container_width=True)
     if p.get("linkedin"):
         c3.link_button(T["linked"], p["linkedin"], use_container_width=True)
-    st.download_button(T["download"], ats_document(data, lang),
-                       "Abraham_Yanez_CV_" + lang + ".txt",
-                       mime="text/plain", use_container_width=True)
+    st.download_button(T["download"], build_cv_pdf(data, lang),
+                       "Abraham_Yanez_CV_" + lang + ".pdf",
+                       mime="application/pdf", use_container_width=True)
     st.markdown("### " + T["track"])
     st.caption(T["track_note"])
     track = st.selectbox("Target role" if lang == "en" else "Puesto objetivo", tracks)
-    st.download_button(T["download"] + " · " + track, ats_document(data, lang, track),
-                       "Abraham_Yanez_" + re.sub(r"[^a-zA-Z0-9_-]", "_", track) + ".txt",
-                       mime="text/plain", use_container_width=True)
+    st.download_button(T["download"] + " · " + track, build_cv_pdf(data, lang, track),
+                       "Abraham_Yanez_" + re.sub(r"[^a-zA-Z0-9_-]", "_", track) + ".pdf",
+                       mime="application/pdf", use_container_width=True)
 
 st.divider()
 st.caption(f"Abraham Yañez Manriquez · Professional Hub · {datetime.now().year} · "
