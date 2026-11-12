@@ -603,7 +603,29 @@ if section == 0:
          if lang == "es" else "Planning, cost and risk control, suppliers and contractor coordination."),
         ("02 · Industrial Operations", "Producción, mejora continua, KPIs y desarrollo de procesos metalmecánicos."
          if lang == "es" else "Production, continuous improvement, KPIs and metalworking process development."),
-        ("03 · Water & Energy", "Proyectos de tratamiento de agua e infraestructura técnicaelif section == 2:
+        ("03 · Water & Energy", "Proyectos de tratamiento de agua e infraestructura técnica en entornos internacionales."
+         if lang == "es" else "Water treatment and technical infrastructure projects in international settings."),
+        ("04 · Digital & Supply Chain", "ERP, seguimiento, compras, logística y desarrollo de proveedores."
+         if lang == "es" else "ERP, tracking, procurement, logistics and supplier development."),
+    ]
+    for i in range(0, len(areas), 2):
+        cols = st.columns(2)
+        for col, (title, desc) in zip(cols, areas[i:i+2]):
+            with col:
+                panel(title, desc)
+    st.markdown("### " + ("Conoce los proyectos detrás de las imágenes" if lang == "es" else "Explore the stories behind the pictures"))
+    st.caption("Selecciona Proyectos para conocer responsabilidades y experiencias por especialidad." if lang == "es"
+               else "Visit Projects to explore responsibilities and experience by specialty.")
+    st.button("Explorar portafolio completo" if lang == "es" else "Explore full portfolio",
+              on_click=change_page, args=(2,), use_container_width=True)
+
+elif section == 1:
+    heading(T["experience"], T["experience_intro"])
+    for item in experience:
+        panel(item.get("role"), " · ".join(str(x) for x in item.get("bullets", [])[:3]),
+              item.get("company"), " | ".join(filter(None, [item.get("period"), item.get("location")])))
+
+elif section == 2:
     heading(
         "Historias que respaldan mi experiencia" if lang == "es" else "The experience behind the work",
         "Más que una lista de equipos: retos, responsabilidades y aprendizajes que conectan ingeniería, operaciones y personas."
@@ -719,26 +741,6 @@ if section == 0:
             url = ev.get("url", "")
             if url.startswith(("https://", "http://")):
                 st.link_button("Ver archivo" if lang == "es" else "Open file", url)
-
-       st.markdown("#### " + (title_en if lang == "en" else title))
-                    if case_index in CASE_STORIES:
-                        for line in CASE_STORIES[case_index][lang]:
-                            st.markdown(line)
-                    else:
-                        st.write(desc_en if lang == "en" else desc)
-    st.divider()
-    st.markdown("### " + ("¿Buscas a alguien que conecte estrategia y ejecución?" if lang == "es" else "Looking for a leader who connects strategy and execution?"))
-    st.write("La experiencia combina gestión industrial, ingeniería, coordinación internacional y formación de equipos." if lang == "es" else "The experience combines industrial management, engineering, international coordination and team development.")
-    if st.button("Contactar para una entrevista" if lang == "es" else "Contact for an interview", on_click=change_page, args=(5,)):
-        pass
-    evidence=[ev for ev in data.get("evidence",[]) if ev.get("published",True)]
-    if evidence:
-        st.markdown("### " + ("Evidencia autorizada" if lang == "es" else "Authorized evidence"))
-        for ev in evidence:
-            panel(ev.get("title"),ev.get("description"),ev.get("type"))
-            url=ev.get("url","")
-            if url.startswith(("https://","http://")):
-                st.link_button("Ver archivo" if lang == "es" else "Open file",url)
 
 elif section == 3:
     heading(T["skills"], T["skills_intro"])
