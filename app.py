@@ -163,10 +163,13 @@ small,.muted{color:#657a8b;}
 }
 [data-testid="stSidebar"] [data-testid="stCaptionContainer"] p {color:#bcd0de!important;line-height:1.55!important;}
 @media(max-width:800px){[data-testid="stSidebar"]{min-width:0!important;max-width:320px!important;}}
+.portfolio-art{background:linear-gradient(125deg,#10263c,#23667a);min-height:145px;border-radius:14px;padding:1.2rem;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:.4rem;color:#fff;margin-bottom:1rem}.portfolio-art span{font-size:2.8rem}.portfolio-art strong{font-weight:800;color:#e5f9fa;font-size:.88rem}.stVerticalBlockBorderWrapper{border-radius:16px!important}
 </style>
 """
 st.markdown(CSS, unsafe_allow_html=True)
 
+
+PORTFOLIO_SHOWCASE = [["Ingeniería de agua y ósmosis","Water engineering and reverse osmosis","Agua e infraestructura","Water and infrastructure","Coordinación de equipos, contratistas, compras, cronogramas y sistemas de tratamiento de agua para infraestructura hotelera.","Coordination of equipment, contractors, procurement, schedules and water treatment systems for hospitality infrastructure.","💧"],["Rehabilitación de plantas y sistemas UV","Plant rehabilitation and UV systems","Rehabilitación técnica","Technical rehabilitation","Seguimiento a reparaciones, inspecciones, componentes, instalaciones hidráulicas y verificación de alcances técnicos.","Follow-up on repairs, inspections, components, hydraulic installations and technical scope.","🔧"],["Trigeneración y sistemas electromecánicos","Trigeneration and electromechanical systems","Energía","Energy","Coordinación documental, responsabilidades, suministros y seguimiento de interfaces entre generación, enfriamiento y sistemas auxiliares.","Coordination of documents, responsibilities, supplies and interfaces across generation, cooling and auxiliary systems.","⚡"],["Robótica de soldadura","Robotic welding","Automatización industrial","Industrial automation","Implementación técnica de celda UR10 y soldadura Fronius 320i en manufactura metalmecánica.","Technical implementation of UR10 robotic cell and Fronius 320i welding in metalworking.","🦾"],["Pintura electrostática y mejora de procesos","Electrostatic coating and process improvement","Manufactura","Manufacturing","Instalación y puesta en marcha de línea industrial, con enfoque en integración y continuidad de producción.","Installation and startup of an industrial line, focused on integration and production continuity.","🏭"],["Producción, maquinaria y operaciones","Production, machinery and operations","Operaciones industriales","Industrial operations","Experiencia coordinando procesos de maquinado, soldadura, troquelado, planeación, KPIs y proveedores.","Experience coordinating machining, welding, stamping, planning, KPIs and suppliers.","⚙️"],["Logística de proyectos internacionales","International project logistics","Supply chain","Supply chain","Gestión y seguimiento de materiales, entregas, fletes y documentación entre México y el Caribe.","Tracking materials, deliveries, freight and documentation across Mexico and the Caribbean.","🚢"],["Digitalización, PMO y control operativo","Digitalization, PMO and operational controls","Transformación digital","Digital transformation","Implementación de ERP, Monday, herramientas de seguimiento de actividades, compras, costos y documentación.","ERP, Monday and activity, procurement, cost and documentation tracking tools.","📊"],["Desarrollo técnico-comercial","Technical-commercial development","Comercial e ingeniería","Sales and engineering","Vinculación entre necesidades industriales, proveedores de herramentales, especificaciones y propuestas de solución.","Connecting industrial needs, tooling suppliers, specifications and solution proposals.","🤝"],["Capacitación empresarial y consultoría","Corporate training and consulting","Formación de equipos","Team development","Diseño e impartición de contenidos para empresas, procesos de mejora continua y competencias profesionales.","Design and delivery of corporate content, continuous improvement and professional skills.","🎓"],["Docencia y acompañamiento formativo","Teaching and educational guidance","Docencia","Education","Experiencia impartiendo administración, finanzas, marco legal y otras materias; tutoría y acompañamiento a estudiantes.","Teaching management, finance, legal frameworks and related subjects; student tutoring and guidance.","📚"]]
 
 def esc(value):
     return html.escape(str(value or ""), quote=True)
@@ -447,12 +450,12 @@ if section == 0:
         for col, (title, desc) in zip(cols, areas[i:i+2]):
             with col:
                 panel(title, desc)
-    if projects:
-        st.markdown("### " + ("Casos relevantes" if lang == "es" else "Featured cases"))
-        cols = st.columns(min(3, len(projects)))
-        for col, item in zip(cols, projects[:3]):
-            with col:
-                panel(item.get("title"), item.get("summary"), item.get("sector", ""))
+    st.markdown("### " + ("Experiencia en acción" if lang == "es" else "Experience in action"))
+    st.caption("Casos representativos basados en mi trayectoria. Las ilustraciones son conceptuales." if lang == "es" else "Representative career cases. Visuals are conceptual.")
+    showcase = [PORTFOLIO_SHOWCASE[i] for i in (0, 3, 9)]
+    for col, item in zip(st.columns(3), showcase):
+        with col:
+            panel(item[1] if lang == "en" else item[0], item[5] if lang == "en" else item[4], item[3] if lang == "en" else item[2])
 
 elif section == 1:
     heading(T["experience"], T["experience_intro"])
@@ -461,30 +464,32 @@ elif section == 1:
               item.get("company"), " | ".join(filter(None, [item.get("period"), item.get("location")])))
 
 elif section == 2:
-    heading(T["projects"], T["projects_intro"])
-    if not projects:
-        st.info("No published projects yet." if lang == "en" else "Aún no hay proyectos publicados.")
-    for idx in range(0, len(projects), 2):
+    heading("Experiencia en acción" if lang == "es" else "Experience in action",
+            "Un portafolio de proyectos, industria, coordinación y formación. Cada caso resume retos y responsabilidades sin exponer información de clientes." if lang == "es" else "A portfolio across projects, industry, coordination and training. Each case summarizes responsibilities without exposing client information.")
+    st.caption("Los símbolos son ilustrativos. Fotografías y videos reales se publicarán únicamente después de revisar su contenido y autorización." if lang == "es" else "Icons are illustrative. Actual photos and videos will only be published after content and permission review.")
+    groups = (["Todos","Agua y energía","Manufactura y automatización","Operaciones y digitalización","Capacitación y docencia"] if lang == "es" else
+              ["All","Water and energy","Manufacturing and automation","Operations and digital","Training and teaching"])
+    group = st.selectbox("Filtrar experiencias" if lang == "es" else "Filter experiences", groups)
+    idx = groups.index(group)
+    indexes = [list(range(len(PORTFOLIO_SHOWCASE))),[0,1,2,6],[3,4,5,8],[5,6,7,8],[9,10]][idx]
+    items = [PORTFOLIO_SHOWCASE[i] for i in indexes]
+    for start in range(0,len(items),2):
         cols = st.columns(2)
-        for col, item in zip(cols, projects[idx:idx+2]):
+        for col,item in zip(cols,items[start:start+2]):
+            title, title_en,category,category_en,desc,desc_en,icon = item
             with col:
-                panel(item.get("title"), item.get("summary"), item.get("sector"),
-                      " · ".join(filter(None, [item.get("region"), item.get("role")])))
-    evidence = [ev for ev in data.get("evidence", []) if ev.get("published", True)]
-    st.markdown("### " + T["evidence"])
-    if not evidence:
-        st.caption(T["evidence_empty"])
-    for ev in evidence:
-        panel(ev.get("title"), ev.get("description"), ev.get("type"))
-        url = ev.get("url", "")
-        if url and url.startswith(("https://", "http://")):
-            extension = url.lower().split("?")[0]
-            if extension.endswith((".jpg", ".jpeg", ".png", ".webp")):
-                st.image(url, width=560)
-            elif extension.endswith((".mp4", ".webm")):
-                st.video(url)
-            else:
-                st.link_button("Open / Abrir", url)
+                with st.container(border=True):
+                    st.markdown('<div class="portfolio-art"><span>'+esc(icon)+'</span><strong>'+esc(category_en if lang == "en" else category)+'</strong></div>',unsafe_allow_html=True)
+                    st.markdown("#### " + (title_en if lang == "en" else title))
+                    st.write(desc_en if lang == "en" else desc)
+    evidence=[ev for ev in data.get("evidence",[]) if ev.get("published",True)]
+    if evidence:
+        st.markdown("### " + ("Evidencia autorizada" if lang == "es" else "Authorized evidence"))
+        for ev in evidence:
+            panel(ev.get("title"),ev.get("description"),ev.get("type"))
+            url=ev.get("url","")
+            if url.startswith(("https://","http://")):
+                st.link_button("Ver archivo" if lang == "es" else "Open file",url)
 
 elif section == 3:
     heading(T["skills"], T["skills_intro"])
